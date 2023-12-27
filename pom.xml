@@ -1,0 +1,51 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-parent</artifactId>
+    <version>2.6.7</version>
+    <relativePath />
+  </parent>
+
+  <groupId>com.food.ordering.system</groupId>
+  <artifactId>gelenler-clean-food-ordering-system</artifactId>
+  <version>1.0-SNAPSHOT</version>
+
+  <packaging>pom</packaging>
+  <modules>
+    <module>order-service</module>
+  </modules>
+
+  <properties>
+    <!-- To keep the versions in a single place: -->
+    <maven-compiler-plugin.version>3.12.1</maven-compiler-plugin.version>
+  </properties>
+
+  <dependencyManagement></dependencyManagement>
+
+  <dependencies></dependencies>
+
+  <build>
+    <plugins>
+      <!-- This plugin will set the java version for a maven project and is used to compile sources of your project. Default source/target setting
+       is 1.7 .
+
+       This plugin is necessary to force intellij to use this specific <release> version.-->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-clean-plugin</artifactId>
+        <version>${maven-compiler-plugin.version}</version>
+        <configuration>
+          <!-- To indicate this is a java 21 project. This release tag will set the same java version for
+          maven.compiler.source and maven.compiler.target, so we don't need those <properties> to write them in this file.-->
+          <release>21</release>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
+  <name>Archetype - gelenler-clean-food-ordering-system</name>
+  <url>http://maven.apache.org</url>
+</project>
