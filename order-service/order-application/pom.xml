@@ -9,4 +9,11 @@
     <artifactId>order-application</artifactId>
     <name>Archetype - order-application</name>
     <url>http://maven.apache.org</url>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.food.ordering.system</groupId>
+            <artifactId>order-application-service</artifactId>
+        </dependency>
+    </dependencies>
 </project>

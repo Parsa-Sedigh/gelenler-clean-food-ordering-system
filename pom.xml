@@ -23,9 +23,51 @@
     <maven-compiler-plugin.version>3.12.1</maven-compiler-plugin.version>
   </properties>
 
-  <dependencyManagement></dependencyManagement>
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>com.food.ordering.system</groupId>
+        <artifactId>order-domain-core</artifactId>
+        <version>${project.version}</version>
+      </dependency>
 
-  <dependencies></dependencies>
+      <dependency>
+        <groupId>com.food.ordering.system</groupId>
+        <artifactId>order-application-service</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>com.food.ordering.system</groupId>
+        <artifactId>order-application</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>com.food.ordering.system</groupId>
+        <artifactId>order-dataaccess</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>com.food.ordering.system</groupId>
+        <artifactId>order-messaging</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.projectlombok</groupId>
+      <artifactId>lombok</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-logging</artifactId>
+    </dependency>
+  </dependencies>
 
   <build>
     <plugins>
@@ -35,7 +77,7 @@
        This plugin is necessary to force intellij to use this specific <release> version.-->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-clean-plugin</artifactId>
+        <artifactId>maven-compiler-plugin</artifactId>
         <version>${maven-compiler-plugin.version}</version>
         <configuration>
           <!-- To indicate this is a java 21 project. This release tag will set the same java version for
