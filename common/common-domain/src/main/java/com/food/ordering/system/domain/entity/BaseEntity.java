@@ -2,6 +2,7 @@ package com.food.ordering.system.domain.entity;
 
 import java.util.Objects;
 
+/* We only need the id in equals and hashCode methods, because entities should have a unique identifier. */
 public abstract class BaseEntity<ID> {
     private ID id;
 
