@@ -80,3 +80,42 @@ the domain event is received and it will organize and call the related domain se
 call the entities to run the business logic.
 
 ## 9-002 Designing Order Service domain logic components
+
+## 10-003 Creating common domain module with base Entity and Aggregate Root classes
+Delete the src folder in common module because this module will be used as a base module.
+
+Note: Delete maven compiler properties as we have set them in the base pom.xml .
+
+We override the equals and hashCode methods in the BaseEntity abstract class because each entity should have a unique id and equals and
+hashCode methods are the contracts that are used to compare the java objects.
+
+AggregateRoot is a marker class. It is still an entity that has a unique id but we created a new class and named it AggregateRoot to distinguish
+the root object from the other entities.
+
+## 11-004 Adding value objects and domain events to common domain module
+We override `equals` and `hashCode` methods in BaseId abstract class as best practice.
+
+We created OrderId class in valueobject package in the common-domain module, because we will need it from Order and OrderItem entities and
+also from PaymentService and RestaurantService, so it is a common value object.
+
+What other value objects should be common?
+
+For example money, we will use it in the OrderService and PaymentService(to work on monetary calculations).
+
+Value objects should be immutable, so we make it's fields immutable using `final`.
+
+Remember the advantages of value objects:
+1. brings context to the value. So when you look at a class, you understand what it holds as a value
+2. when you have a separate class for value object like Money, you can have some business ops inside the value object. So we can delegate
+some business logic to this value object
+
+About Money value object:
+
+For the BigDecimal ops like add and multiply, if the op includes monetary calculations, you need to be more cautious to care
+the precision and rounding operations. For this, we add a method named setScale() in Money class.
+
+BigDecimal(double val) constructor: Result is somewhat unpredictable because of the nature of fractional numbers.
+
+We call the setScale() method before creating the money object with the BigDecimal value like in the add() method.
+
+## 12-005 Implementing Order Service domain logic using DDD - Order Aggregate Root
