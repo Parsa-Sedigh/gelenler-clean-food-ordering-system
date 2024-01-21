@@ -151,3 +151,79 @@ By creating a specific exception for each domain(like `OrderDomainException`), w
 DDD. With this, we can look at the code or when we see the exception in the logs, we know which domain it comes from.
 
 ## 14-007 Adding state changing methods to Order Entity
+![](img/14-1-1.png)
+
+`Pay()`, `approve()`, `initCancel()` and `cancel()` are state changing methods of Order entity, to change the state of an order during
+order processing. So basically these methods will help us to create a simple state machine to validate the previous state and apply
+the next state(you can see the transition of state machine in the next diagram).
+![](img/14-1-2.png)
+
+The state machine: When an order is first initialized, it is in the Pending state. Then it will go to the payment service,
+payment service can return two responses, payment successful or payment failed. If payment is successful, order should transit into
+the Paid state. So in the pay() method, we should first check if order is in Pending state.
+
+If payment svc returns successful and order status set as paid, this paid order is sent to restaurant approval. If approval is successful,
+order should go into approved state.
+
+If the restaurant approval fails, we know order is still in paid status, now order service needs to inform payment service to 
+rollback the payment operation and we set the order status as cancelling and sent a cancel req to the payment service. We cover this scenario
+while implementing SAGA pattern since this is an example of compensating transaction.
+
+In cancel method of Order aggregate root, as we see in the 14-1-1 diagram, when this method is called, order can be in two states:
+- pending: if order is sent to payment svc and payment failed, we should set the order status as cancelled. In that case,
+the current order status will be **pending**. The cancelling state could also lead to cancelled state, which is in case of approval is failed,
+order is set as cancelling and then the payment service is called for rollback operation. Then payment svc completes the rollback for
+the payment, order svc should set the order status as cancelled. So the cancel() method has 2 possible pre-conditions for it's operation.
+
+**We hold a history of failure messages in the Order entity for audit purposes and also to return to client when order status
+is queried using the get endpoint.**
+
+The Restaurant aggregate root will be used by the domain service directly, to run some business logic across the Restaurant aggregate
+and the Order aggregate.
+
+Before implementing the domain service, we should add the domain events.
+
+## 15-008 Implementing Domain Events in Order Service domain layer
+We will create 3 domain events:
+- OrderCreatedEvent
+- OrderPaidEvent
+- OrderCancelledEvent
+
+The DomainEvent is a marker interface to mark the class as a DomainEvent and also to mark the entity class using the generic type.
+
+Note: We return domain events from the OrderDomainService. That means the event firing process will be on the caller service, which will be
+the application service. This is an approach that we prefer for domain events handling process. So the events will still be created
+in the domain core, either in entity or in domain service. However, **the event firing will be in the application service.** We do this because
+before firing an event, the underlying business operation should be persisted into the DB. Because if we fire an event and persist op fails later,
+we will end up with an incorrect event which would have never been fired.
+
+Q: Why didn't we fire an event in the domain service or entity?
+
+A: Because if I want to fire events in the domain core, we need to persist the business logic results in the domain service or entity,
+since we want to persist operations before event firing. However, as we mentioned, we prefer to delegate the repository calls to the
+application service, to prevent doing unnecessary job in the domain core module which should only focus on business logic. The domain has no
+knowledge about event publishing or event tracking. **It only creates and return the events after running business logic.**
+
+Application service will decide when and how to raise the events.
+
+Q: Where to fire the event?
+
+A: In application service. Domain layer should not know about how to fire the event.
+
+You may have seen different approaches when it comes to the domain events handling process, such as firing the event in the domain entity or
+in the domain service. However, I prefer to create and return the domain event from the domain core module and delegate the event firing process
+to application service.
+
+The second question: Where should we create the domain events? In entity or domain service?
+
+A: Naturally, domain entities are responsible to create the related events, as they can be directly called from the application service.
+Because in DDD, using a domain service is not mandatory. As mentioned, domain service is required if you have access to multiple aggregates
+in business logic or you have some logic that doesn't fit into any entity class. However, here, **we also follow a personalized approach and
+always integrate a domain service in front of the domain. So our application service will never talk to entities directly.** Because of that,
+we can safely move the event creation into the domain service.
+
+Q: Where to create the event?
+
+A: Domain service or entities.
+
+## 16-009 Implementing Order Domain Service

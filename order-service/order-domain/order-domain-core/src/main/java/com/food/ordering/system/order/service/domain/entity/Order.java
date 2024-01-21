@@ -14,7 +14,7 @@ import java.util.UUID;
 /* This will be the aggregate root for order process. So we extend the AggregateRoot abstract class.
 
 We didn't create setter methods for this class, although this is not an immutable class. Instead, we use methods with
-well-defined names for state altering ops.*/
+well-defined names for state altering ops(like pay, approve, initCancel and cancel).*/
 public class Order extends AggregateRoot<OrderId> {
     private final CustomerId customerId;
     private final RestaurantId restaurantId;
@@ -24,6 +24,9 @@ public class Order extends AggregateRoot<OrderId> {
 
     private TrackingId trackingId;
     private OrderStatus orderStatus;
+
+    /* We hold a history of failure messages in the Order entity for audit purposes and also to return to client when order status
+    is queried using the get endpoint.*/
     private List<String> failureMessages;
 
     public void initializeOrder() {
@@ -38,6 +41,50 @@ public class Order extends AggregateRoot<OrderId> {
         validateInitialOrder();
         validateTotalPrice();
         validateItemsPrice();
+    }
+
+    public void pay() {
+        if (orderStatus != OrderStatus.PENDING) {
+            throw new OrderDomainException("Order is not in correct state for pay operation!");
+        }
+
+        orderStatus = OrderStatus.PAID;
+    }
+
+    public void approve() {
+        if (orderStatus != OrderStatus.PAID) {
+            throw new OrderDomainException("Order is not in correct state for approve operation!");
+        }
+
+        orderStatus = OrderStatus.APPROVED;
+    }
+
+    public void initCancel(List<String> failureMessages) {
+        if (orderStatus != OrderStatus.PAID) {
+            throw new OrderDomainException("Order is not in correct state for initCancel operation!");
+        }
+
+        orderStatus = OrderStatus.CANCELLING;
+        updateFailureMessages(failureMessages);
+    }
+
+    public void cancel(List<String> failureMessages) {
+        if (!(orderStatus == OrderStatus.CANCELLING || orderStatus == OrderStatus.PENDING)) {
+            throw new OrderDomainException("Order is not in correct state for cancel operation!");
+        }
+
+        orderStatus = OrderStatus.CANCELLED;
+        updateFailureMessages(failureMessages);
+    }
+
+    private void updateFailureMessages(List<String> failureMessages) {
+        if (this.failureMessages != null && failureMessages != null) {
+            this.failureMessages.addAll(failureMessages.stream().filter(message -> !message.isEmpty()).toList());
+        }
+
+        if (this.failureMessages == null) {
+            this.failureMessages = failureMessages;
+        }
     }
 
     private void validateInitialOrder() {
@@ -76,7 +123,7 @@ public class Order extends AggregateRoot<OrderId> {
 
     private void initializeOrderItems() {
         long itemId = 1;
-        for (OrderItem orderItem: items) {
+        for (OrderItem orderItem : items) {
             orderItem.initializeOrderItem(super.getId(), new OrderItemId(itemId++));
         }
     }
