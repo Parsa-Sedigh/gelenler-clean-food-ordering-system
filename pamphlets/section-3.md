@@ -227,3 +227,34 @@ Q: Where to create the event?
 A: Domain service or entities.
 
 ## 16-009 Implementing Order Domain Service
+Create `OrderDomainServiceImpl` class to implement OrderDomainService interface.
+
+![](img/16-1-1.png)
+
+We get the productId and the item price from the client, but we need to make sure this price is really the price of the product. For this,
+we get the product info from the DB using restaurant entity(we could only get the productId from client IMO!) and then we will crosscheck
+the product info in `OrderDomainServiceImpl`.
+
+`OrderDomainServiceImpl` is the only place we use a lib in the domain module, but only in the domain service(`OrderDomainServiceImpl`) not 
+in the domain core. For this, add lombok dep with `provided` as `scope` and `spring-boot-starter-logging`.
+We add these deps in `<dependencies>` section instead of `<dependencyManagement>`, because we will use 
+these deps(in `<dependencies>`) application-wise, even in the domain service.
+Do a mvn reload and start using the libs.
+
+Now the core module is ready to be called by the application service which will be the first contact point of a client req.
+
+In ddd concepts, the domain service drives the business logic in the domain core module. In terms of clean arch from uncle bob, these
+**domain services could be matched to use cases.** Because use cases are described as the components that drive the business entities and
+domain service as the similar.
+So matching the application services(DDD) to use cases(clean arch) is wrong. Because application service has no business logic inside and it is
+exposed to outside through an interface. While the use cases are not exposed(in terms of clean arch).
+
+## 17-010 Implementing Order Application Service - DTO classes
+
+## 18-011 Adding Mapper class and port definitions to Order Application Service
+## 012 Implementing input ports in Order Application Service
+## 013 Implementing message publisher in Order Application Service to fire the events
+## 014 Implementing Order Track Command Handler
+
+## 015 Testing Order Service domain logic - Part 1
+## 016 Testing Order Service domain logic - Part 2
