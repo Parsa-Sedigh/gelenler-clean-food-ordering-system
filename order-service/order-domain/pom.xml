@@ -12,5 +12,6 @@
     <url>http://maven.apache.org</url>
     <modules>
         <module>order-application-service</module>
+        <module>order-application-service</module>
     </modules>
 </project>

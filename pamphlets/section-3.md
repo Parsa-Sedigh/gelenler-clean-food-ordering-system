@@ -250,11 +250,69 @@ So matching the application services(DDD) to use cases(clean arch) is wrong. Bec
 exposed to outside through an interface. While the use cases are not exposed(in terms of clean arch).
 
 ## 17-010 Implementing Order Application Service - DTO classes
+Go to `order-application-service`.
+
+We handle data validations(using spring-boot-starter-validation dep) and transactions in the application service(using spring-tx).
+
+So as opposed to domain core module(order-domain-core), we use deps in the application service module.
+
+The `AllArgsConstructor` annotation is required for the `Builder` annotation of lombok.
+
+Remember that in the domain-core module, instead of using lombok for the builder, we created the builder class manually(using a
+intellij plugin). Because we wanted to reach each code clearly, to be able to add some checks during object creation, besides,
+we also wanted to make the domain core module independent. But in one level above in the domain which is the application service,
+we can use lombok annotations to get rid of boilerplate java code and we know we won't write any logic during the creation of DTO objects,
+they are just data transfer objects. So we won't need to write the builder pattern code manually, since we won't have any logic during
+object creation, hence using lombok Builder annotation.
+
+Client sends a `CreateOrderCommand` and gets back a `CreateOrderResponse`, both are DTO objects.
+
+We use the `sagaId` in the messages between the services.
 
 ## 18-011 Adding Mapper class and port definitions to Order Application Service
-## 012 Implementing input ports in Order Application Service
-## 013 Implementing message publisher in Order Application Service to fire the events
-## 014 Implementing Order Track Command Handler
+After creating DTO classes, create a mapper package to hold the data mapper class.
 
-## 015 Testing Order Service domain logic - Part 1
-## 016 Testing Order Service domain logic - Part 2
+OrderDataMapper is marked with spring's `Component` annotation, so that it will be a spring component meaning we can inject and
+use it from the service classes.
+
+The com.food.ordering.system.order.service.domain.ports package will hold the ports in the hexagonal arch. Each of these ports,
+will have the corresponding adapters either in the domain layer or in one of the infrastructure layers.
+
+There are two types of ports in hexagonal arch:
+- input ports: are the interfaces that's implemented in the domain layer and used by the clients of the domain layer
+- output ports: are the interfaces that's implemented in the infrastructure layer like dataaccess or messaging modules and used
+by the domain layer to reach to those infrastructure layers
+
+**Note:** In `OrderApplicationService` interface, we put the `@Valid` annotation to enable the validation annotation like 
+`@NotNull` and `@Max`, on the DTO class fields.
+
+Q: But why we put the @Valid annotation in the interface and not in the implementation of the interface methods?
+
+A: Because of bean specification: a method's preconditions(as represented by parameter constraints) must not be strengthened in sub-types.
+If we use @Valid in the implementation, we will get constraint declaration exception.
+
+We have 3 input ports in the order service:
+1. OrderApplicationService: Will be used by the client of this application, like the postman calls that we will make to initiate an order.
+2. PaymentResponseMessageListener
+3. RestaurantApprovalResponseMessageListener
+
+The second and third input ports are the message listeners for payment and restaurant approvals.
+Remember: We have mentioned that **domain event listeners are special type of application services and they are triggered by
+domain events not by the clients.** We will raise domain events on payment and restaurant microservices and it will trigger the 
+message listeners in this microservice(order).
+
+The repository interfaces defined in output.repository package, will be implemented in the dataaccess layers with the adapters.
+
+**In the ports.output.message.publisher package, we have created 3 message publisher interfaces to publish the possible three types of events
+in the order domain logic.** Actually, we have a single domain event publisher interface named `DomainEventPublisher` with a `publish` method,
+but we also give meaningful names for the specific publishers by creating different interfaces like 
+`OrderCancelledPaymentRequestMessagePublisher`, so that we can understand why a publisher is used by the name following the DDD.
+
+Now let's create implementation classes of order-application-service.
+
+## 19-012 Implementing input ports in Order Application Service
+## 20-013 Implementing message publisher in Order Application Service to fire the events
+## 21-014 Implementing Order Track Command Handler
+
+## 22-015 Testing Order Service domain logic - Part 1
+## 23-016 Testing Order Service domain logic - Part 2
