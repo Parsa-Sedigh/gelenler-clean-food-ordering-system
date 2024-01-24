@@ -15,6 +15,10 @@ public class Restaurant extends AggregateRoot<RestaurantId> {
         active = builder.active;
     }
 
+    public static Builder builder() {
+        return new Builder();
+    }
+
     public List<Product> getProducts() {
         return products;
     }
@@ -33,10 +37,11 @@ public class Restaurant extends AggregateRoot<RestaurantId> {
         private Builder() {
         }
 
-        /* When the builder plugins creates a builder for this class, this method name will be `newBuilder`, we change it to `Builder`.*/
-        public static Builder builder() {
-            return new Builder();
-        }
+        /* When the builder plugins creates a builder for this class, this method name will be `newBuilder`, we change it to `Builder`.
+        Also move this method to the Restaurant class instead of being here inside the static Builder class.*/
+//        public static Builder builder() {
+//            return new Builder();
+//        }
 
         public Builder restaurantId(RestaurantId val) {
             restaurantId = val;

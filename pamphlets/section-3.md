@@ -132,6 +132,14 @@ Use generate menu(ctrl + n) to create the builder with the final fields and choo
 `Generate static newBuilder() method`. Note: It cannot use the generic type `<OrderItemId>` to set the base id, so we need to 
 do it manually.
 
+Note: After plugin generated the code, move the
+```java
+public static Builder builder() {
+        return new Builder();
+}
+```
+To the class that you're creating a builder for, instead of the Builder class.
+
 **With builder pattern, the constructor of the class should be private.** So we need to use the builder to create the object. We can't
 use the constructor anymore because private constructors can't be reached outside of the class. 
 Look at the constructor of `OrderItem` class.
@@ -271,6 +279,7 @@ We use the `sagaId` in the messages between the services.
 
 ## 18-011 Adding Mapper class and port definitions to Order Application Service
 After creating DTO classes, create a mapper package to hold the data mapper class.
+**We use data mappers to convert the DTOs to domain objects and vice versa.** We use data mappers in the application services.
 
 OrderDataMapper is marked with spring's `Component` annotation, so that it will be a spring component meaning we can inject and
 use it from the service classes.
@@ -311,6 +320,19 @@ but we also give meaningful names for the specific publishers by creating differ
 Now let's create implementation classes of order-application-service.
 
 ## 19-012 Implementing input ports in Order Application Service
+We use data mappers to create domain objects from input DTOs and vice versa. In domain driven terms, you may see these as the factory
+because we delegate the object conversion and creation operations to these mapper classes(like OrderDataMapper).
+
+Note: As you can see in `OrderCreateCommandHandler`'s `createOrder` method, we have skipped the event firing step. 
+After creating the order, we want to fire an event to trigger payment process in payment service.
+There, we have saved the order into persistent store, but we also need to fire the OrderCreatedEvent that is returned
+from the domain core module. Remember that saving into local DB and firing the event operations should be atomic.
+To make these ops atomic, we will use saga along with outbox pattern.
+
+Note: We should first save the order into local DB and THEN fire the event, but the other way around(first firing the event
+and then saving into local DB), could lead to inconsistent state. So before publishing an event, if we wanna make sure that the
+changes are committed into the persistent store in the local DB, we have two options.
+
 ## 20-013 Implementing message publisher in Order Application Service to fire the events
 ## 21-014 Implementing Order Track Command Handler
 
