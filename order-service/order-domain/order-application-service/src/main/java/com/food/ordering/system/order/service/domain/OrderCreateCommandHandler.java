@@ -54,7 +54,7 @@ public class OrderCreateCommandHandler {
         when the createOrder() method is completed and the transaction is committed.*/
 //      applicationDomainEventPublisher.publish(orderCreatedEvent);
 
-        return orderDataMapper.orderToCreateOrderResponse(orderCreatedEvent.getOrder());
+        return orderDataMapper.orderToCreateOrderResponse(orderCreatedEvent.getOrder(), "Order Created Successfully");
     }
 
     ////////////// If we used spring's event publishing capabilities //////////////

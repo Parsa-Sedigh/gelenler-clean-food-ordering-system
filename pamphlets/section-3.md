@@ -122,7 +122,6 @@ OrderCancelledEvent is fired if payment fails or the approval of the order fails
 
 ![](./img/9-2-1.png)
 
-
 ## 10-003 Creating common domain module with base Entity and Aggregate Root classes
 Delete the src folder in common module because this module will be used as a base module.
 
@@ -387,7 +386,7 @@ Since we used the default spring proxy AOP, all AOP functionality provided by sp
 account, if the call goes through the proxy. That means the annotated methods should be invoked from **another Bean(in this case,
 OrderCreateHelper)**. That's why we created a new `@Component` named `OrderCreateHelper`, so in the `OrderCreateCommandHandler`, 
 if we create a new method with `@Transactional` and call a method from  `OrderCreateHelper`(like calling OrderCreateHelper.persistOrder from
-OrderCreateCommandHandler.createOrder), the @Transactional will not function. 
+OrderCreateCommandHandler.createOrder), the @Transactional will not function.
 Also, the methods with @Transactional, must be public, otherwise the @Transactional will not function again.
 
 Note that if you use AspectJ modes, instead of spring proxy AOP, you won't have this limitation. However, to use that,
@@ -407,6 +406,20 @@ We continue with the first approach instead of second(using transactional event 
 additional application publish step and it simply uses the method calls.
 
 ## 21-014 Implementing Order Track Command Handler
+The listener implementations(like `PaymentResponseMessageListenerImpl` and `RestaurantApprovalResponseMessageListenerImpl`) will be
+triggered by the domain events from other bounded contexts(payment and restaurant services).
+As we used command handler classes in the order application service, here, we will use two different classes to handle these listeners
+and actually, they will complete the saga pattern. So for now, we stop here and continue with the implementation of these domain event listeners
+in the saga section.
+
+By leaving the listener implementation to the saga section, we have completed the implementation of order service domain layer.
 
 ## 22-015 Testing Order Service domain logic - Part 1
+How can we test the domain logic while mocking the xml deps?
+
+We use spring boot test lib with mockito to write unit tests for the order service domain logic. 
+
+Note: The repositories are output ports that will be implemented by adapters in xml modules.
+
 ## 23-016 Testing Order Service domain logic - Part 2
+![](./img/23-1-1-event-flow-with-ports.png)
