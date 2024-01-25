@@ -376,7 +376,33 @@ and then saving into local DB), could lead to inconsistent state. So before publ
 changes are committed into the persistent store in the local DB, we have two options.
 
 ## 20-013 Implementing message publisher in Order Application Service to fire the events
+Create `OrderCreateHelper`.
 
+The implementation of `DomainEventPublisher`'s `publish` method will be in order-messaging-module. In domain layer,
+we don't need to think about the details of the publishing a message, like using kafka or some other solution.
+
+In `publish-event-option-1` branch:
+
+Since we used the default spring proxy AOP, all AOP functionality provided by spring, including @Transactional, will only be taken into
+account, if the call goes through the proxy. That means the annotated methods should be invoked from **another Bean(in this case,
+OrderCreateHelper)**. That's why we created a new `@Component` named `OrderCreateHelper`, so in the `OrderCreateCommandHandler`, 
+if we create a new method with `@Transactional` and call a method from  `OrderCreateHelper`(like calling OrderCreateHelper.persistOrder from
+OrderCreateCommandHandler.createOrder), the @Transactional will not function. 
+Also, the methods with @Transactional, must be public, otherwise the @Transactional will not function again.
+
+Note that if you use AspectJ modes, instead of spring proxy AOP, you won't have this limitation. However, to use that,
+you need to include and configure the AspectJ lib.
+
+Look at `using aspectJ with spring applications`.
+
+### Alternate approach using spring framework for the event publishing operation(publish-event-option-2 branch):
+The @TransactionalEventListener in spring listens an event that is fired from a transactional method and it only processes the event
+if the transactional operation is completed successfully.
+
+Create `ApplicationDomainEventPublisher`.
+
+We continue with the first approach instead of second(using transactional event listener), as the first approach doesn't have the
+additional application publish step and it simply uses the method calls.
 
 ## 21-014 Implementing Order Track Command Handler
 

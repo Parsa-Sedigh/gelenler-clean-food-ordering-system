@@ -32,6 +32,4 @@ public class OrderCreateCommandHandler {
 
         return orderDataMapper.orderToCreateOrderResponse(orderCreatedEvent.getOrder());
     }
-
-
 }
