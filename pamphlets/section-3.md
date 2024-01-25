@@ -376,7 +376,7 @@ and then saving into local DB), could lead to inconsistent state. So before publ
 changes are committed into the persistent store in the local DB, we have two options.
 
 ## 20-013 Implementing message publisher in Order Application Service to fire the events
-Create `OrderCreateHelper`.
+**Create `OrderCreateHelper`.**
 
 The implementation of `DomainEventPublisher`'s `publish` method will be in order-messaging-module. In domain layer,
 we don't need to think about the details of the publishing a message, like using kafka or some other solution.
@@ -399,7 +399,9 @@ Look at `using aspectJ with spring applications`.
 The @TransactionalEventListener in spring listens an event that is fired from a transactional method and it only processes the event
 if the transactional operation is completed successfully.
 
-Create `ApplicationDomainEventPublisher`.
+**Create `ApplicationDomainEventPublisher`, `ApplicationDomainEventPublisher` and `OrderCreatedEventApplicationListener`.**
+
+The code for this approach is marked with `If we used spring's event publishing capabilities`.
 
 We continue with the first approach instead of second(using transactional event listener), as the first approach doesn't have the
 additional application publish step and it simply uses the method calls.
