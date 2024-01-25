@@ -80,6 +80,48 @@ the domain event is received and it will organize and call the related domain se
 call the entities to run the business logic.
 
 ## 9-002 Designing Order Service domain logic components
+### Order Processing aggregate
+**Entity: Represents a business object with a unique identifier.**
+
+First, we create Order entity class and make it the aggregate root.
+
+We use value objects to hold to fields to bring context to the values. So for example for the orderId field of Order aggregate,
+we create an OrderId value object and hold an UUID field inside it(we would have another value object named `OrderItemId` for
+the id field of OrderItem entity).
+
+Then we create the value objects for Order entity.
+
+Then OrderItem entity.
+
+for an `OrderItem`: `quantity * price = subTotal`
+
+**The trackingId will be used to query the order status, so we won't need to expose the internal orderId field.**
+
+The failureMessages field of Order entity is to collect the failure messages from other aggregates during business logic and
+return to the caller service.
+
+For customer aggregate, we will have a single entity named `Customer` which is an aggregate root.
+
+For restaurant aggregate, we have Restaurant entity which is an aggregate root of the restaurant aggregate and we use it to
+get info about products.
+
+The product entity is also used in the Restaurant entity(aggregate root). So we use a shared Product entity in order aggregate and
+restaurant aggregate in the business logic.
+
+### domain events
+Define the possible domain events that can be generated in the order service.
+
+When a client triggers an order process op, we should create an `OrderCreatedEvent`. When we create this event, the order status
+will be in the Pending state as it is the first step in order process. In this event, we keep the order and createdAt with
+type `ZonedDateTime`. Note that for `ZonedDateTime`, we don't create a value object because it is actually a value object
+that is defined in the JDK. So we can use it directly as a value object.
+
+OrderPaidEvent is fired when a payment is completed for an order(status will be Paid).
+
+OrderCancelledEvent is fired if payment fails or the approval of the order fails during restaurant approval.
+
+![](./img/9-2-1.png)
+
 
 ## 10-003 Creating common domain module with base Entity and Aggregate Root classes
 Delete the src folder in common module because this module will be used as a base module.
@@ -334,6 +376,8 @@ and then saving into local DB), could lead to inconsistent state. So before publ
 changes are committed into the persistent store in the local DB, we have two options.
 
 ## 20-013 Implementing message publisher in Order Application Service to fire the events
+
+
 ## 21-014 Implementing Order Track Command Handler
 
 ## 22-015 Testing Order Service domain logic - Part 1

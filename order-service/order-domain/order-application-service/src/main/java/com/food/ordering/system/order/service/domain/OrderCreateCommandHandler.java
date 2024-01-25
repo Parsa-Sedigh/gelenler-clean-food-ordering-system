@@ -47,8 +47,7 @@ public class OrderCreateCommandHandler {
 
         Order order = orderDataMapper.createOrderCommandToOrder(createOrderCommand);
 
-        /* validate and initiate order in domain core and then save it using repository.
-        */
+        /* validate and initiate order in domain core and then save it using repository.*/
         OrderCreatedEvent orderCreatedEvent = orderDomainService.validateAndInitiateOrder(order, restaurant);
 
         Order orderResult = saveOrder(order);
