@@ -423,3 +423,7 @@ Note: The repositories are output ports that will be implemented by adapters in 
 
 ## 23-016 Testing Order Service domain logic - Part 2
 ![](./img/23-1-1-event-flow-with-ports.png)
+
+You can run the tests with coverage.
+
+Kafka is our event store to use in saga and outbox patterns.
