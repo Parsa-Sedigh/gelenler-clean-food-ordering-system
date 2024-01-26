@@ -426,4 +426,4 @@ Note: The repositories are output ports that will be implemented by adapters in 
 
 You can run the tests with coverage.
 
-Kafka is our event store to use in saga and outbox patterns.
+Kafka is our event store to use in saga, outbox and CQRS patterns.

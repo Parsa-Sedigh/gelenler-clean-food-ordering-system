@@ -1,0 +1,7 @@
+version: '3.7'
+
+networks:
+  # this network type will enable reaching to other containers by the container names that share the same network(the network name
+  # is food-ordering-system).
+  food-ordering-system:
+    type: network
