@@ -94,6 +94,11 @@ In k8s, we will replace docker-compose with CP helm charts to run kafka cluster.
 Now write kafka generic modules.
 
 ## 26-003 Implementing Kafka config data generic module
+In kafka module, delete the <properties> in pom.xml and the src folder.
+
+Set the parent of submodules in kafka module, the kafka module.
+
+Start with kafka-config-data module.
 
 ## 27-004 Implementing Kafka model generic module
 

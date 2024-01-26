@@ -3,14 +3,10 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>com.food.ordering.system</groupId>
-        <artifactId>gelenler-clean-food-ordering-system</artifactId>
+        <artifactId>kafka</artifactId>
         <version>1.0-SNAPSHOT</version>
     </parent>
-    <artifactId>infrastructure</artifactId>
-    <packaging>pom</packaging>
-    <name>Archetype - infrastructure</name>
+    <artifactId>kafka-producer</artifactId>
+    <name>Archetype - kafka-producer</name>
     <url>http://maven.apache.org</url>
-    <modules>
-        <module>kafka</module>
-    </modules>
 </project>

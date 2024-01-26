@@ -1,0 +1,82 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.food.ordering.system</groupId>
+
+        <!-- Instead of using the project's root base pom.xml (and specifying <relativePath> to that module), we use
+         the infrastructure module as the parent. So use infrastructure as artifactId, instead of food-ordering-system.-->
+        <artifactId>infrastructure</artifactId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+    <artifactId>kafka</artifactId>
+
+    <!-- make sure this is pom. Because this will be the base pom for submodules of this module. -->
+    <packaging>pom</packaging>
+    <name>Archetype - kafka</name>
+    <url>http://maven.apache.org</url>
+    <modules>
+        <module>kafka-producer</module>
+        <module>kafka-consumer</module>
+        <module>kafka-model</module>
+        <module>kafka-config-data</module>
+    </modules>
+
+    <repositories>
+        <!-- We added this, because we wanna use kafka avro serializer dep from the confluent lib which is not in
+        the maven central repository, so we need to use confluent repository for that.-->
+        <repository>
+            <id>confluent</id>
+            <url>https://packages.confluent.io/maven/</url>
+        </repository>
+    </repositories>
+
+    <!-- Define the deps with version in this base pom.xml file. So the submodules will be able to use these deps without setting the
+     versions.-->
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.springframework.kafka</groupId>
+                <artifactId>spring-kafka</artifactId>
+
+                <!-- The version is defined in project's root base pom.xml file in it's <properties> section. -->
+                <version>${spring-kafka.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>io.confluent</groupId>
+                <artifactId>kafka-avro-serializer</artifactId>
+                <version>${kafka-avro-serializer.version}</version>
+
+                <!-- We don't want to add these deps that comes with kafka-avro-serializer. -->
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.slf4j</groupId>
+                        <artifactId>slf4j-log4j12</artifactId>
+                    </exclusion>
+
+                    <exclusion>
+                        <groupId>log4j</groupId>
+                        <artifactId>log4j</artifactId>
+                    </exclusion>
+
+                    <exclusion>
+                        <groupId>io.swagger</groupId>
+                        <artifactId>swagger-annotations</artifactId>
+                    </exclusion>
+
+                    <exclusion>
+                        <groupId>io.swagger</groupId>
+                        <artifactId>swagger-core</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.avro</groupId>
+                <artifactId>avro</artifactId>
+                <version>${avro.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+</project>

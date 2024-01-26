@@ -1,7 +1,6 @@
-# the sole purpose of this container is to create the topics and then exit.
-
 version: '3.7'
 services:
+  # the sole purpose of this container is to create the topics and then exit.
   init-kafka:
     image: confluentinc/cp-kafka:${KAFKA_VERSION}
     entrypoint: [ '/bin/sh', '-c' ]

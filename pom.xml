@@ -22,9 +22,13 @@
   </modules>
 
   <properties>
-    <!-- To keep the versions in a single place: -->
+    <!-- To keep the versions in a single place, we put the dep versions here, so we don't have to specify these versions in
+     submodules pom.xml files.-->
     <maven-compiler-plugin.version>3.12.1</maven-compiler-plugin.version>
     <mockito.version>4.3.1</mockito.version>
+    <spring-kafka.version>3.1.1</spring-kafka.version>
+    <kafka-avro-serializer.version>7.5.1</kafka-avro-serializer.version>
+    <avro.version>1.11.3</avro.version>
   </properties>
 
   <dependencyManagement>
@@ -62,6 +66,30 @@
       <dependency>
         <groupId>com.food.ordering.system</groupId>
         <artifactId>common-domain</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>com.food.ordering.system</groupId>
+        <artifactId>kafka-producer</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>com.food.ordering.system</groupId>
+        <artifactId>kafka-consumer</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>com.food.ordering.system</groupId>
+        <artifactId>kafka-model</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>com.food.ordering.system</groupId>
+        <artifactId>kafka-config-data</artifactId>
         <version>${project.version}</version>
       </dependency>
 
