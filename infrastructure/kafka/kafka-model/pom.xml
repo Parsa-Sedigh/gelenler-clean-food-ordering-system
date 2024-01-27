@@ -9,4 +9,46 @@
     <artifactId>kafka-model</artifactId>
     <name>Archetype - kafka-model</name>
     <url>http://maven.apache.org</url>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.apache.avro</groupId>
+            <artifactId>avro</artifactId>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+
+            <!-- We use this plugin to create the avro java classes from the avro schema files. -->
+            <plugin>
+                <groupId>org.apache.avro</groupId>
+                <artifactId>avro-maven-plugin</artifactId>
+                <version>${avro.version}</version>
+                <configuration>
+                    <stringType>String</stringType>
+
+                    <!-- With this, we can use the decimal type for the price field. -->
+                    <enableDecimalLogicalType>true</enableDecimalLogicalType>
+                </configuration>
+                <executions>
+                    <execution>
+                        <!-- With this phase and goals, when you run `mvn install`, it will create the avro classes during the
+                        generate-sources phase.-->
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>schema</goal>
+                        </goals>
+                        <configuration>
+                            <!-- avro schema files will be here. -->
+                            <sourceDirectory>src/main/resources/avro</sourceDirectory>
+
+                            <!-- the generated avro java classes will be in this package. -->
+                            <outputDirectory>src/main/java</outputDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 </project>

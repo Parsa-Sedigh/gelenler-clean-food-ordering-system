@@ -1,0 +1,65 @@
+{
+  "namespace": "com.food.ordering.system.kafka.order.avro.model", // java package that the generated java files will be placed
+  "type": "record",
+  "name": "PaymentRequestAvroModel", // java class name
+  "fields": [
+    {
+      "name": "id",
+      "type": {
+        "type": "string",
+
+        /* avro doesn't have a uuid type, but to mark this field with the correct field, we can use this logical type. In the end,
+         this will be a java string and the values still need to be validated in the client code that uses this avro schema type.*/
+        "logicalType": "uuid"
+      }
+    },
+    {
+      "name": "sagaId",
+      "type": {
+        "type": "string",
+        "logicalType": "uuid"
+      }
+    },
+    {
+      "name": "customerId",
+      "type": {
+        "type": "string",
+        "logicalType": "uuid"
+      }
+    },
+    {
+      "name": "orderId",
+      "type": {
+        "type": "string",
+        "logicalType": "uuid"
+      }
+    },
+    {
+      "name": "price",
+      "type": {
+        "type": "bytes",
+        "logicalType": "decimal",
+
+        /* With this, we would have prices like 10.75 or 200.50 . This is aligned with the implementation of the order domain logic(look at
+        the scale in Money which is for BigDecimal values). */
+        "precision": 10,
+        "scale": 2
+      }
+    },
+    {
+      "name": "createdAt",
+      "type": {
+        "type": "long",
+        "logicalType": "timestamp-millis"
+      }
+    },
+    {
+      "name": "paymentOrderStatus",
+      "type": {
+        "type": "enum",
+        "name": "PaymentOrderStatus",
+        "symbols": ["PENDING", "CANCELLED"]
+      }
+    }
+  ]
+}

@@ -101,6 +101,15 @@ Set the parent of submodules in kafka module, the kafka module.
 Start with kafka-config-data module.
 
 ## 27-004 Implementing Kafka model generic module
+We have created 4 kafka topics and accordingly, we create 4 schema files(avro files).
+
+Run this command for kafka-model module to create the java avro models from avro schema files:
+```shell
+# inside kafka-model module:
+mvn clean install
+```
+
+If you see errors in generated files, do mvn reload so that intellij will see the avro deps.
 
 ## 28-005 Implementing Kafka producer generic module
 
