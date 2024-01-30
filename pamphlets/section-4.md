@@ -114,3 +114,4 @@ If you see errors in generated files, do mvn reload so that intellij will see th
 ## 28-005 Implementing Kafka producer generic module
 
 ## 29-006 Implementing Kafka consumer generic module
+We will use generic kafka modules(`kafka` module) in order-messaging module.
