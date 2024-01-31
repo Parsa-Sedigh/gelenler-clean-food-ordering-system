@@ -9,4 +9,11 @@
     <artifactId>common</artifactId>
     <name>Archetype - common</name>
     <url>http://maven.apache.org</url>
+
+    <packaging>pom</packaging>
+
+    <modules>
+        <module>common-domain</module>
+        <module>common-application</module>
+    </modules>
 </project>

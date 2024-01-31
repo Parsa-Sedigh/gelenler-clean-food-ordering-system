@@ -16,6 +16,5 @@
         <module>order-dataaccess</module>
         <module>order-messaging</module>
         <module>order-container</module>
-        <module>order-domain/order-domain-core</module>
     </modules>
 </project>

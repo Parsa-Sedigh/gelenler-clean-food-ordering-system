@@ -15,8 +15,8 @@ in `OrderGlobalExceptionHandler`.
 **Note:** OrderDomainException is the exception thrown from the order domain layer.
 
 Errors:
-- domain layer errors(exceptions). These errors are caught in <Entity>GlobalExceptionHandler classes that we create for each aggregate root(like order) or
-maybe entity
+- domain layer errors(exceptions). These errors are caught in <aggregate >GlobalExceptionHandler classes that we create for 
+each aggregate root(like order).
 - data validation checks in domain services
 - internal server errors during the req
 
@@ -30,13 +30,22 @@ one central place and it's in the base pom file of the project.
 
 - `The order-application module` uses the input port of order domain which is `OrderApplicationService`(OrderApplicationService is injected
 in OrderController). 
-- The order-dataaccess module implements the output ports of the order-domain which are the repository interfaces.
+- The order-dataaccess module(it's adapter classes) implements the output ports of the order-domain which are the repository interfaces.
 
 ## 32-003 Data access module Adding Order JPA Entity
+Data access adapter classes implement the output ports of the domain layer.
 
 ## 33-004 Data access module Adding JPA Repository & Adapter implementation
+Note: The base path of all of our microservice packages is: com.food.ordering.system.<micro service name>.service .
 
-005 Data access module Adding Customer and Restaurant implementations
+For each type of aggregate in domain layer, create a package in dataaccess package of order-dataaccess module.
+Then create 4 subpackages in each of those packages.
+
+First create the JPA entities(in entity subpackage of dataaccess) to be used in repository.
+
+Then create the repository interface using supreme JPA.
+
+## 34-005 Data access module Adding Customer and Restaurant implementations
 
 006 Messaging module Adding Mapper and Config Data
 
