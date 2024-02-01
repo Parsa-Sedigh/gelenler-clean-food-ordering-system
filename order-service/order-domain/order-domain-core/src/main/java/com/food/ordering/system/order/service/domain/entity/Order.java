@@ -29,6 +29,8 @@ public class Order extends AggregateRoot<OrderId> {
     is queried using the get endpoint.*/
     private List<String> failureMessages;
 
+    public static final String FAILURE_MESSAGE_DELIMITER = ",";
+
     public void initializeOrder() {
         setId(new OrderId(UUID.randomUUID()));
         trackingId = new TrackingId(UUID.randomUUID());

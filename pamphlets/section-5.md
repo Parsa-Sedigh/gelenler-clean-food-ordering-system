@@ -35,7 +35,6 @@ in OrderController).
 ## 32-003 Data access module Adding Order JPA Entity
 Data access adapter classes implement the output ports of the domain layer.
 
-## 33-004 Data access module Adding JPA Repository & Adapter implementation
 Note: The base path of all of our microservice packages is: com.food.ordering.system.<micro service name>.service .
 
 For each type of aggregate in domain layer, create a package in dataaccess package of order-dataaccess module.
@@ -45,9 +44,16 @@ First create the JPA entities(in entity subpackage of dataaccess) to be used in 
 
 Then create the repository interface using supreme JPA.
 
+## 33-004 Data access module Adding JPA Repository & Adapter implementation
+The mapper package in dataaccess module is to:
+- create entity objects(dataaccess layer) from domain objects(domain layer)
+- create domain objects from entity objects
+
+Data access implementation for order entity is completed!
+
 ## 34-005 Data access module Adding Customer and Restaurant implementations
 
-006 Messaging module Adding Mapper and Config Data
+## 35-006 Messaging module Adding Mapper and Config Data
 
 007 Messaging module Adding Publisher implementations
 
