@@ -54,12 +54,31 @@ Data access implementation for order entity is completed!
 ## 34-005 Data access module Adding Customer and Restaurant implementations
 
 ## 35-006 Messaging module Adding Mapper and Config Data
+In the messaging module, use generic kafka modules to implement the adapters for the publisher output ports(that are 
+interfaces) from the order domain layer. Also there, we create the kafka listener implementations to be used by the domain layer.
 
-007 Messaging module Adding Publisher implementations
+Create `OrderServiceConfigData` class in order-application-service submodule.
 
-008 Messaging module Adding Listener implementations
+Note: We use 4 kafka topics to communicate between the microservices using domain events. 
 
-009 Container module Adding spring boot starter class and config
+## 36-007 Messaging module Adding Publisher implementations
+Note: An example of an output port in hex arch is `OrderCreatedPaymentRequestMessagePublisher`.
+
+We create separate publisher classes for each type of domain events. Although the publish() method implementations look similar in
+these classes, it is wise to keep them separated in different publisher classes to easily maintain and change each 
+publisher separately and for common operations like the kafka callback method, we still use a common helper class.
+
+## 37-008 Messaging module Adding Listener implementations
+`PaymentResponseMessageListener` is one of the input ports in the domain layer and it has the adapter implementation in the
+order-application-service module. In PaymentResponseKafkaListener, we just need to listen to kafka messages and
+trigger that adapter implementation.
+
+The PaymentResponseMessageListener is in the input ports of order-application-service and it needs to be implemented in the
+order-domain layer(the order-application-service submodule). Then it will be called from the PaymentResponseKafkaListener class.
+
+The order-container will include the spring boot main class and the application configuration.
+
+## 38-009 Container module Adding spring boot starter class and config
 
 010 Container module Explaining kafka consumer properties
 
