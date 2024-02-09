@@ -88,19 +88,57 @@ kafka-producer-config:
 kafka-consumer-config:
   key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
   value-deserializer: io.confluent.kafka.serializers.KafkaAvroDeserializer
+
+  # the group-id of consumer ensures that a kafka consumer doesn't start from beginning each time while consuming a kafka topic.
+  # Instead, it will continue from the last read item by using offset. This offset is matched with a consumer group using the unique id.
   payment-consumer-group-id: payment-topic-consumer
   restaurant-approval-consumer-group-id: restaurant-approval-topic-consumer
   customer-group-id: customer-topic-consumer
+
+  # With this, if there's no offset in the kafka server, you say that you want to start reading from the beginning of a partition.
+  # So when you read a kafka topic first time, if you set this property as `earliest`, it will start reading from the beginning of
+  # a partition which is the preferred behavior most of the time. If you set this property as `latest`, it will reset the offset to
+  # the latest record, but in that case, you can only read the new data that comes after you start your consumer.
   auto-offset-reset: earliest
   specific-avro-reader-key: specific.avro.reader
   specific-avro-reader: true
+
+  # allows to consume the data in batches instead of consuming them one by one.
   batch-listener: true
   auto-startup: true
+
+  # equal to the partition number. With n partitions, we can have at most n consumers. If the number of consumers is greater,
+  # the rest will be idle until you add more partitions.
   concurrency-level: 3
+
+  # Sets the timeout for heartbeat and specifies the amount of time between the broker needs to get at least one heartbeat signal from
+  # the consumer. If broker doesn't get a signal in this timeout interval, it'll mark the consumer as dead and it will remove it from the
+  # consumer group. The default value for this property is 10 seconds.
   session-timeout-ms: 10000
+
+  # Sets the frequency of sending heartbeat signals to the broker by the consumer. The default is 3 seconds.
+  # It is recommended to wait for some missing heartbeat signals before marking the consumer as dead. Because a network can
+  # fail temporarily. That's why we set the heartbeat-interval to one third of session-timeout. So that it will try
+  # three times before timing outs and before consumer will be removed from the consumer group.
   heartbeat-interval-ms: 3000
+
+  # If message processing logic is too heavy, it might take more time than the time interval. In that case, coordinator will mark the
+  # consumer as dead and it will leave the consumer group and coordinator will trigger a new round of re-balance to assign partitions
+  # to the other available consumers. So it's important to set the max-poll-interval property according to the processing time requirements of
+  # your app.
   max-poll-interval-ms: 300000
+
+  # sets the max records to fetch in each poll. If it's set to 500, when consumer fetches the data, it can fetch 500 records at max at a time.
   max-poll-records: 500
-  max-partition-fetch-bytes-default: 1048576
+
+  # max bytes that can be fetched in each poll, so this puts another limit on the consumer. For example if you set the max-poll-records as
+  # 500 reocrds each time when polling. But if this 500 records hold more bytes than the limit in this property, you can not get 500 records
+  # that time
+  max-partition-fetch-bytes-default: 1048576 # 1MB
   max-partition-fetch-bytes-boost-factor: 1
-  poll-timeout-ms: 150
+
+  # if there's no data on kafka topic, the consumer waits for some time and blocks the code.
+  # Do not use large values because it will block the thread. Also, if you set this too small, will cause CPU stall because in
+  # your polling logic, you will have a loop and if poll-timeout is set to very small value, your while loop will run
+  # very frequently and it will use your CPU resources a lot.
+  poll-timeout-ms: 150 # 150 milliseconds

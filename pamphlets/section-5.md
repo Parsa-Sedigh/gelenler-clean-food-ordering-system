@@ -81,6 +81,11 @@ The order-container will include the spring boot main class and the application 
 ## 38-009 Container module Adding spring boot starter class and config
 
 ## 39-010 Container module Explaining kafka consumer properties
+If we make the consumer group id, a random value, what would happen each time your restart your kafka consumer?
+
+Since an offset is matched with the group id, it will not see any offset with new randomly created consumer group id,
+so each time you will read the data from the start. This might be a use case if you really want to read the same data again and again,
+but mostly it's not preferred.
 
 ## 40-011 Container module Adding Order database schema file
 
