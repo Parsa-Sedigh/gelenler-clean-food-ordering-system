@@ -1,0 +1,106 @@
+server:
+  port: 8181
+logging:
+  level:
+    com.food.ordering.system: DEBUG # set the log level as DEBUG for the base package.
+
+# order-service is the prefix for the topic names
+order-service:
+  payment-request-topic-name: payment-request
+  payment-response-topic-name: payment-response
+  restaurant-approval-request-topic-name: restaurant-approval-request
+  restaurant-approval-response-topic-name: restaurant-approval-response
+
+spring:
+  jpa:
+    # will disable open session in-view. Which forces the persistence context to stay open. So that the view layer can trigger
+    # the proxy initialization. This will keep a DB connection open for a long time which would have really bad effects on DB performance.
+    # It's enabled in spring by default. We set it to false.
+    open-in-view: false
+    show-sql: true # for debugging
+    database-platform: org.hibernate.dialectPostgreSQL9Dialect
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialectPostgreSQL9Dialect
+  datasource:
+    # Note: With binaryTransfer=true, the data will be transferred from postgres server to JDBC driver in binary form, so it'll be
+    # transferred faster, as this will eliminate the need for conversion like converting a number from their text representation to their
+    # binary representation.
+    # Note: With reWriteBatchedInserts=true, we increase the batch insert performance, by rewriting the batch inserts to use multi-values.
+    # That means it will use a single INSERT statement with multiple values instead of using multiple INSERT statements which will increase
+    # the insert perf.
+    # Note: The stringtype=unspecified will tell JDBC driver to send all strings untyped. We use this to use UUID field and to prevent
+    # string checking on UUID type on postgres.
+    url: jdbc:postgresql://localhost:5432/postgres?currentSchema=order&binaryTransfer=true&reWriteBatchedInserts=true&stringtype=unspecified
+    username: postgres
+    password: admin # this should be encrypted! and we need to externalize the configuration at the same time(do both).
+    driver-class-name: org.postgresql.Driver
+    platform: postgres
+    schema: classpath:init-schema.sql
+
+    # with this set to always, the schema defined in schema property will run each time we start the spring boot app.
+    initialization-mode: always
+
+# This and the next two properties are the prefixes that we set on kafka config classes that have @Configuration on them.
+kafka-config:
+  # sets the broker addresses in the kafka cluster.
+  bootstrap-servers: localhost:19092, localhost:29092, localhost:39092
+  schema-registry-url-key: schema.registry.url
+  schema-registry-url: http://localhost:8081
+
+  # With 3 partitions, we can run 3 concurrent kafka consumers.
+  num-of-partitions: 3
+
+  # With replication-factor set to 3, we can have better resiliency. Because it will keep the replicated data in 3 different partitions in
+  # 3 different brokers.
+  replication-factor: 3
+
+kafka-producer-config:
+  key-serializer-class: org.apache.kafka.common.serialization.StringSerializer
+  value-serializer-class: io.confluent.kafka.serializers.KafkaAvroSerializer
+
+  # The compression options that kafka supports are: gzip, lz4, zstd and snappy. Snappy gives a good balance of cpu usage, compression ratio,
+  # speed and network utilization.
+  # Note: gzip will compress more but it'll be slower and lz4 will compress less and it will be faster but that also will result in
+  # higher network bandwidth usage.
+  compression-type: snappy
+
+  # this means the kafka producer will wait acknowledgment from EACH broker before confirming the produce operation.
+  acks: all
+
+  # 16384(16KB) is the default value
+  batch-size: 16384
+
+  # To increase the batch size. The batch size will be used to send the data in batches from producer to kafka brokers.
+  batch-size-boost-factor: 100
+
+  # Is used to add a delay on producer before sending the data. This makes sense when there is a light load on producer.
+  # With light load, producer will send data to broker, even if the batch size limit is not reached. So by using a delay with
+  # linger-ms property, you can increase the batch size, so you can increase the throughput on the producer side.
+  linger-ms: 5
+
+  # this is the timeout value that producer will throw a timeout error in case no response comes from the kafka broker.
+  request-timeout-ms: 60000
+
+  # it will retry 5 times in case of error on the producer side.
+  retry-count: 5
+
+kafka-consumer-config:
+  key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+  value-deserializer: io.confluent.kafka.serializers.KafkaAvroDeserializer
+  payment-consumer-group-id: payment-topic-consumer
+  restaurant-approval-consumer-group-id: restaurant-approval-topic-consumer
+  customer-group-id: customer-topic-consumer
+  auto-offset-reset: earliest
+  specific-avro-reader-key: specific.avro.reader
+  specific-avro-reader: true
+  batch-listener: true
+  auto-startup: true
+  concurrency-level: 3
+  session-timeout-ms: 10000
+  heartbeat-interval-ms: 3000
+  max-poll-interval-ms: 300000
+  max-poll-records: 500
+  max-partition-fetch-bytes-default: 1048576
+  max-partition-fetch-bytes-boost-factor: 1
+  poll-timeout-ms: 150

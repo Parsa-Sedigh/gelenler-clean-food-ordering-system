@@ -80,8 +80,8 @@ The order-container will include the spring boot main class and the application 
 
 ## 38-009 Container module Adding spring boot starter class and config
 
-010 Container module Explaining kafka consumer properties
+## 39-010 Container module Explaining kafka consumer properties
 
-011 Container module Adding Order database schema file
+## 40-011 Container module Adding Order database schema file
 
-012 Creating Customer Service & Running Order Service
+## 51-012 Creating Customer Service & Running Order Service
