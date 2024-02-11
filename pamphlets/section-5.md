@@ -88,5 +88,45 @@ so each time you will read the data from the start. This might be a use case if 
 but mostly it's not preferred.
 
 ## 40-011 Container module Adding Order database schema file
+Note: When we implement the outbox pattern, we will create the required outbox tables in init-schema.sql as well.
+
+In addition to the init-schema.sql for the order tables, we also need the restaurant schema, tables and the materialized view, just to 
+test the order service.
+
+Note: In business logic of order-service, there is a check in checkRestaurant method on the restaurant info which uses a materialized view.
+Later, when implementing restaurant service, we will add restaurant schema info to the restaurant service itself to automatically create it(but
+what is that `order_restaurant_m_view` in order service?)
+
+For now, we run the schema sql code for restaurant's schema, table and the materialized view, ourselves. Again note that we will be creating the
+init schema and data sql files for restaurant in the restaurant service later.
+
+Build the code:
+```shell
+mvn clean install
+```
+The above code will also create the docker image for the order service using the spring-boot-maven-plugin with build-image goal that we have
+in `order-container`.
+
+Then we need to create the customer tables and then we can test the order service end-to-end.
 
 ## 51-012 Creating Customer Service & Running Order Service
+For now, create a spring boot main class and create the DB objects for the customer service. Then we will use a materialized view to query
+customer data from the order service. Later we will use CQRS pattern to use customer data in the order service.
+
+```shell
+# in infrastructure/docker-compose folder:
+docker-compose -f common.yml -f zookeeper.yml up
+
+# in another terminal(make sure zookeeper is running):
+docker-compose -f common.yml -f kafka_cluster.yml up
+```
+Then open localhost:9000.
+
+Then run the order-service(it's main class is in order-container). Also make sure postgres is running with correct username and password.
+
+Run a POST req to: localhost:8181/orders with correct payload.
+
+Then:
+```shell
+kafkacat -C -b localhost:19092 -t payment-request
+```
