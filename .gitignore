@@ -36,4 +36,9 @@ build/
 .vscode/
 
 ### Mac OS ###
-.DS_Store
+.DS_Stor
+
+/infrastructure/docker-compose/volumes/
+
+/pamphlets/img/
+/pamphlets/slides/

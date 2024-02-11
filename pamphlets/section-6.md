@@ -6,7 +6,13 @@ think this CreditHistory and CreditEntry as separate aggregate roots. For exampl
 So they can act independently from a payment aggregate root. Therefore, they can be aggregate root themselves.
 
 We won't implement this API to topup customer credit and instead initialize the data from an sql file. But we still we keep these entities
-separate to emphasize that they don't necessarily be only included in a payment op. 
+separate to emphasize that they don't necessarily be only included in a payment op.
+
+## 53-002 Domain core module Adding Exception and Domain events
+Create specific events but keep the common code in the base event class(`PaymentEvent`).
+
+## 54-003 Domain core module Implementing Payment Domain Service
+
 
 ## 53-002 Domain core module Adding Exception and Domain events
 ## 54-003 Domain core module Implementing Payment Domain Service
