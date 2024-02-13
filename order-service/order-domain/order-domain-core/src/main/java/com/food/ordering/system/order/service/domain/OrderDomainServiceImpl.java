@@ -13,12 +13,12 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.List;
 
+import static com.food.ordering.system.domain.DomainConstants.UTC;
+
 /* You see that the domain service uses multiple aggregates(root aggregates) to check some business
 requirements(here, it uses Order and Restaurant aggregate roots). */
 @Slf4j
 public class OrderDomainServiceImpl implements OrderDomainService {
-    private static final String UTC = "UTC";
-
     @Override
     public OrderCreatedEvent validateAndInitiateOrder(Order order, Restaurant restaurant) {
         validateRestaurant(restaurant);

@@ -13,13 +13,10 @@ Create specific events but keep the common code in the base event class(`Payment
 
 ## 54-003 Domain core module Implementing Payment Domain Service
 
-
-## 53-002 Domain core module Adding Exception and Domain events
-## 54-003 Domain core module Implementing Payment Domain Service
 ## 55-004 Application Service domain module Adding Mapper, Config and Ports
 ## 56-005 Application Service domain module Implementing input ports - Part 1
 ## 57-006 Application Service domain module Implementing input ports - Part 2
-## 58-007 Application Service domain module Refactoring fire event process
+## 68-007 Application Service domain module Refactoring fire event process
 ## 59-008 Implementing Data Access module
 ## 60-009 Implementing Messaging module Adding Mapper and Publishers
 ## 61-010 Implementing Messaging module Adding Listeners
