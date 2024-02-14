@@ -34,6 +34,8 @@
 
   <dependencyManagement>
     <dependencies>
+      <!-- We add our local modules here with their version, so that we don't need to specify their version when putting them in dependencies
+       of other local modules.-->
       <dependency>
         <groupId>com.food.ordering.system</groupId>
         <artifactId>order-domain-core</artifactId>
@@ -61,6 +63,12 @@
       <dependency>
         <groupId>com.food.ordering.system</groupId>
         <artifactId>order-messaging</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>com.food.ordering.system</groupId>
+        <artifactId>payment-domain-core</artifactId>
         <version>${project.version}</version>
       </dependency>
 
