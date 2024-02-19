@@ -20,6 +20,7 @@ the domain objects.
 Note: @AllArgsConstructor is required to use the @Builder.
 
 **Note:** The ports package in <service>-application-service, only contains interfaces that need to be implemented with adapters.
+Ports are only interfaces that need to be implemented with adapters.
 
 We will implement the repository interfaces(output port) of output ports package in `dataaccess` module and we will implement the
 message publisher(which is an output port) interfaces in `messaging` module.
