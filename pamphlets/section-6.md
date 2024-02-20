@@ -31,7 +31,17 @@ be called with domain events from the other services like order-service.
 ## 56-005 Application Service domain module Implementing input ports - Part 1
 
 ## 57-006 Application Service domain module Implementing input ports - Part 2
-## 68-007 Application Service domain module Refactoring fire event process
+
+## 58-007 Application Service domain module Refactoring fire event process
+We need to have a reference to the publisher impl classes(like PaymentCompletedMessagePublisher) in the 
+payment event classe(like PaymentCompletedEvent). However, the problem is that the publisher(publisher interfaces) is in the payment-application-service,
+but the domain event class is in the payment-domain-core. **We can not put a dep from the domain-core to the application service.** Because
+it's the core domain and we want it to be the most independent module. Also even if we decide to put that dep, it will create a cyclic dep.
+Because payment-application-service already has a dep to the payment-domain-core.
+
+The solution is: Since PaymentCompletedMessagePublisher extends DomainEventPublisher interface and DomainEventPublisher is in the `common-domain`
+module, we can use DomainEventPublisher in the event classes directly. So in the PaymentCompletedEvent class we can add DomainEventPublisher field.
+
 ## 59-008 Implementing Data Access module
 ## 60-009 Implementing Messaging module Adding Mapper and Publishers
 ## 61-010 Implementing Messaging module Adding Listeners

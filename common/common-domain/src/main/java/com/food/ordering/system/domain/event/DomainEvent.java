@@ -4,5 +4,5 @@ package com.food.ordering.system.domain.event;
 that will fire that event. For example, when we create the OrderCreatedEvent class, we will set this generic type as Order, which is
 the entity that this event is originated from.*/
 public interface DomainEvent<T> {
-
+    void fire();
 }
