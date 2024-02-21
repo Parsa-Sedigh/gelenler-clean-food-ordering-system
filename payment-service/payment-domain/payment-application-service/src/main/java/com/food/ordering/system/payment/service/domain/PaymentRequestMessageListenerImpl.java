@@ -20,11 +20,11 @@ public class PaymentRequestMessageListenerImpl implements PaymentRequestMessageL
 //    private final PaymentCancelledMessagePublisher paymentCancelledMessagePublisher;
 //    private final PaymentFailedMessagePublisher paymentFailedMessagePublisher;
 
-    public PaymentRequestMessageListenerImpl(PaymentRequestHelper paymentRequestHelper,
+    public PaymentRequestMessageListenerImpl(PaymentRequestHelper paymentRequestHelper
 //                                             PaymentCompletedMessagePublisher paymentCompletedMessagePublisher,
 //                                             PaymentCancelledMessagePublisher paymentCancelledMessagePublisher,
 //                                             PaymentFailedMessagePublisher paymentFailedMessagePublisher
-    ]) {
+    ) {
         this.paymentRequestHelper = paymentRequestHelper;
 //        this.paymentCompletedMessagePublisher = paymentCompletedMessagePublisher;
 //        this.paymentCancelledMessagePublisher = paymentCancelledMessagePublisher;

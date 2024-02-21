@@ -43,6 +43,19 @@ The solution is: Since PaymentCompletedMessagePublisher extends DomainEventPubli
 module, we can use DomainEventPublisher in the event classes directly. So in the PaymentCompletedEvent class we can add DomainEventPublisher field.
 
 ## 59-008 Implementing Data Access module
+In the dataaccess module, we will implement the ouput interfaces from the payment domain (payment-application-service) with adapters.
+We will have payment, credit entry and credit history repo adapters.
+
+Add payment-application-service dep to pom file of payment-dataaccess and add payment-application-service dep to base pom.xml of the project and
+in order to omit the versions in the pom of dataaccess module, add `<version>${project.version}</version>` in the base pom file. Now we can use
+payment-application-service without specifying the version in other modules.
+
+Note: In the repositoryImpl classes we should only return domain objects and not the JPA objects. Because the domain layer shouldn't know
+anything about the JPAEntity(dataaccess layer).
+
+In hex arch terms, an output port is an interface that requires an implementation which is an adapter.
+
 ## 60-009 Implementing Messaging module Adding Mapper and Publishers
+
 ## 61-010 Implementing Messaging module Adding Listeners
 ## 62-011 Implementing Container module
