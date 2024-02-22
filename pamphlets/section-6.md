@@ -67,6 +67,16 @@ We won't try to generalize the code for `publisher.kafka` package of `payment-me
 payment statuses. Instead, we will keep each publisher separate to keep the possibility of changing them separately for different reasons.
 
 ## 61-010 Implementing Messaging module Adding Listeners
-
+In `PaymentRequestKafkaListener`, we listen to kafka messages and trigger the adapter implementation of the PaymentRequestMessageListener input port.
 
 ## 62-011 Implementing Container module
+The container module will include a spring boot starter class, so it will start the microservice itself and it will have all the deps to run
+the payment service domain logic together with the adapter implementations which are data-access and messaging.
+
+The container module is the dirties component that means it has dep to all modules to be able to run all of them together.
+
+The `spring-boot-maven-plugin` plugin creates a runnable bundled jar file from the module.
+
+Normally, we would create an endpoint for updating customer's credit data, but for simplicity, we just init some data in the payment service.
+
+The total `amount` of debit and credit in `credit_history` for a customer, should be equal to the `total_credit_amount` column in the `credit_entry` table. 
