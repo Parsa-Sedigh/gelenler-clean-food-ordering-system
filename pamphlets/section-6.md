@@ -43,7 +43,7 @@ The solution is: Since PaymentCompletedMessagePublisher extends DomainEventPubli
 module, we can use DomainEventPublisher in the event classes directly. So in the PaymentCompletedEvent class we can add DomainEventPublisher field.
 
 ## 59-008 Implementing Data Access module
-In the dataaccess module, we will implement the ouput interfaces from the payment domain (payment-application-service) with adapters.
+In the dataaccess module, we will implement the output interfaces from the payment domain (payment-application-service) with adapters.
 We will have payment, credit entry and credit history repo adapters.
 
 Add payment-application-service dep to pom file of payment-dataaccess and add payment-application-service dep to base pom.xml of the project and
@@ -56,6 +56,17 @@ anything about the JPAEntity(dataaccess layer).
 In hex arch terms, an output port is an interface that requires an implementation which is an adapter.
 
 ## 60-009 Implementing Messaging module Adding Mapper and Publishers
+In the messaging module, we use generic kafka modules(the `kafka` sub-module of the infrastructure module) to implement the adapters for
+the publisher output ports of the domain layer. Also in the messaging module we will create the kafka listener implementations to be used
+by the domain layer.
+
+The publisher output ports of the domain layer, are implemented in the messaging module. For example, `PaymentCompletedMessagePublisher` is
+implemented in the messaging module.
+
+We won't try to generalize the code for `publisher.kafka` package of `payment-messaging` module, so that we would have 1 class for all types of 
+payment statuses. Instead, we will keep each publisher separate to keep the possibility of changing them separately for different reasons.
 
 ## 61-010 Implementing Messaging module Adding Listeners
+
+
 ## 62-011 Implementing Container module
