@@ -33,3 +33,8 @@ Using outbox table, we will keep track of saga and order status for each op. Als
 to prevent data corruption in case of concurrent ops. We will apply optimistic locks and DB constraints using the outbox table.
 
 Note: We should consider state changes for both happy flow and failure scenarios.
+
+![](img/section-9/001-outbox.png)
+![](img/section-9/001-2-outbox-payment-failure.png)
+
+## 002 Updating Order Service database schema and config for Outbox Pattern
