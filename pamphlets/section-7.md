@@ -15,8 +15,9 @@ Changes required after using the inner builder plugin:
 - change type and name of the ID field of Builder class to the generic type that the root class is extending
 
 ## 64-002 Domain core module Adding Exception, Domain events and Domain Service
+We have created the `fire()` method of DomainEvent, to easily fire an event from the application service.
 
-003 Application Service domain module Adding Mapper, DTO and Ports
+## 65-003 Application Service domain module Adding Mapper, DTO and Ports
 
 004 Application Service domain module Implementing input ports
 
