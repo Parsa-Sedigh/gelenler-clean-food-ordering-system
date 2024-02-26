@@ -18,11 +18,20 @@ Changes required after using the inner builder plugin:
 We have created the `fire()` method of DomainEvent, to easily fire an event from the application service.
 
 ## 65-003 Application Service domain module Adding Mapper, DTO and Ports
+**We do the validation and transaction management in the application service.**
 
-004 Application Service domain module Implementing input ports
+In `@ConfigurationProperties(prefix = "restaurant-service")`, the prefix is the prefix we use in application.yml of the container module.
 
-005 Implementing Data Access module
+Data mapper classes are factory classes that will create the domain objects from the input objects that were sent by clients and also
+create the output objects from the domain objects.
 
-006 Implementing Messaging module
+Note: The input ports will be implemented in the application-service(same module that the interfaces are defined) module and the
+output ports will be implemented in the infra modules like dataaccess and messaging. 
 
-007 Implementing  Container module
+## 66-004 Application Service domain module Implementing input ports
+
+## 67-005 Implementing Data Access module
+
+## 68-006 Implementing Messaging module
+
+## 69-007 Implementing  Container module
