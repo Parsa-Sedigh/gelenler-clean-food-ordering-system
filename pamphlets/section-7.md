@@ -31,7 +31,12 @@ output ports will be implemented in the infra modules like dataaccess and messag
 ## 66-004 Application Service domain module Implementing input ports
 
 ## 67-005 Implementing Data Access module
+In restaurant dataaccess module, we want the restaurant entity, but we'd like to use the same entity class from the
+order dataaccess module using the materialized view. So instead of repeating the code in the restaurant service and creating the
+same entity, we create a common data access module. Then we can use it in all of the services.
+
+Data access and messaging modules are the adapter implementations of output ports of application service module.
 
 ## 68-006 Implementing Messaging module
 
-## 69-007 Implementing  Container module
+## 69-007 Implementing Container module

@@ -12,8 +12,8 @@ The value of @EntityScan's basePackages is pointing only to the module that hold
 package, will be scanned as JPA entities.
 
 With @EnableJpaRepositories(basePackages = "") any JPA class that is in that package, will be scanned as a JPA repository.*/
-@EnableJpaRepositories(basePackages = "com.food.ordering.system.order.service.dataaccess")
-@EntityScan(basePackages = "com.food.ordering.system.order.service.dataaccess")
+@EnableJpaRepositories(basePackages = { "com.food.ordering.system.order.service.dataaccess", "com.food.ordering.system.dataaccess" })
+@EntityScan(basePackages = { "com.food.ordering.system.order.service.dataaccess", "com.food.ordering.system.dataaccess" })
 @SpringBootApplication(scanBasePackages = "com.food.ordering.system")
 public class OrderServiceApplication {
     public static void main(String[] args) {
