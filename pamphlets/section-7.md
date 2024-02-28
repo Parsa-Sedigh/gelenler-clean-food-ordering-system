@@ -35,8 +35,14 @@ In restaurant dataaccess module, we want the restaurant entity, but we'd like to
 order dataaccess module using the materialized view. So instead of repeating the code in the restaurant service and creating the
 same entity, we create a common data access module. Then we can use it in all of the services.
 
-Data access and messaging modules are the adapter implementations of output ports of application service module.
+Data access and messaging modules are the adapter implementations of output ports of application service module(domain layer).
 
 ## 68-006 Implementing Messaging module
+For each event, we have created a publisher in publisher.kafka package of restaurant messaging module.
+Create `OrderApprovedKafkaMessagePublisher` and `OrderRejectedKafkaMessagePublisher`.
+
+The container module has all the deps to run the microservice including the domain module together with it's 
+adapter implementations(dataaccess and messaging).
 
 ## 69-007 Implementing Container module
+

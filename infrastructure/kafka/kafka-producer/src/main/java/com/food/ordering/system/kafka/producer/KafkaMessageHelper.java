@@ -12,7 +12,9 @@ public class KafkaMessageHelper {
 
     /* The logs in the methods of returned object of this method, seems to be the only logging information for now. However,
      when we implement saga and outbox patterns, the importance of these methods will increase and we will be refactoring this code
-     to obtain a highly resilient system.*/
+     to obtain a highly resilient system.
+
+     This callback will be called when kafka producer gets a res from kafka cluster.*/
     public <T> ListenableFutureCallback<SendResult<String, T>>
     getKafkaCallback(String responseTopicName, T avroModel, String orderId, String avroModelName) {
         return new ListenableFutureCallback<SendResult<String, T>>() {
