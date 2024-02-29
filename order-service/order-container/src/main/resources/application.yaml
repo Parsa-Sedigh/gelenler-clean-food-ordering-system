@@ -18,10 +18,10 @@ spring:
     # It's enabled in spring by default. We set it to false.
     open-in-view: false
     show-sql: true # for debugging
-    database-platform: org.hibernate.dialectPostgreSQL9Dialect
-    properties:
-      hibernate:
-        dialect: org.hibernate.dialectPostgreSQL9Dialect
+#    database-platform: org.hibernate.dialectPostgreSQL9Dialect
+#    properties:
+#      hibernate:
+#        dialect: org.hibernate.dialectPostgreSQL9Dialect
   datasource:
     # Note: With binaryTransfer=true, the data will be transferred from postgres server to JDBC driver in binary form, so it'll be
     # transferred faster, as this will eliminate the need for conversion like converting a number from their text representation to their
@@ -35,11 +35,16 @@ spring:
     username: postgres
     password: admin # this should be encrypted! and we need to externalize the configuration at the same time(do both).
     driver-class-name: org.postgresql.Driver
-    platform: postgres
-    schema: classpath:init-schema.sql
+    #platform: postgres
+    #schema: classpath:init-schema.sql
 
     # with this set to always, the schema defined in schema property will run each time we start the spring boot app.
-    initialization-mode: always
+    #initialization-mode: always
+  sql:
+    init:
+      platform: postgres
+      schema-locations: classpath:init-schema.sql
+      mode: always
 
 # This and the next two properties are the prefixes that we set on kafka config classes that have @Configuration on them.
 kafka-config:

@@ -35,7 +35,7 @@ public class GlobalExceptionHandler {
 
      ConstraintViolationExceptions are the exceptions that come from our validation annotations.*/
     @ResponseBody
-    @ExceptionHandler(value = {Exception.class})
+    @ExceptionHandler(value = {ValidationException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorDTO handleException(ValidationException validationException) {
         ErrorDTO errorDTO;

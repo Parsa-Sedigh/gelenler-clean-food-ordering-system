@@ -16,12 +16,13 @@ import java.util.stream.Collectors;
 public class OrderMessagingDataMapper {
     public PaymentRequestAvroModel orderCreatedEventToPaymentRequestAvroModel(OrderCreatedEvent orderCreatedEvent) {
         Order order = orderCreatedEvent.getOrder();
+        System.out.println("HELLO THERE");
 
         return PaymentRequestAvroModel.newBuilder()
-                .setId(UUID.randomUUID())
+                .setId(UUID.fromString(UUID.randomUUID().toString()))
                 .setSagaId(UUID.fromString(""))
                 .setCustomerId(order.getCustomerId().getValue())
-                .setOrderId(order.getId().getValue())
+                .setOrderId(orderCreatedEvent.getOrder().getId().getValue())
                 .setPrice(order.getPrice().getAmount())
                 .setCreatedAt(orderCreatedEvent.getCreatedAt().toInstant())
                 .setPaymentOrderStatus(PaymentOrderStatus.PENDING)

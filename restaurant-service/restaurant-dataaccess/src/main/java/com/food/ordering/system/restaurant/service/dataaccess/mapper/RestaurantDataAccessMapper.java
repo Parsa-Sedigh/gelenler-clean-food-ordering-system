@@ -1,4 +1,4 @@
-package com.food.ordering.system.restaurant.service.dataaccess.restaurant.mapper;
+package com.food.ordering.system.restaurant.service.dataaccess.mapper;
 
 import com.food.ordering.system.dataaccess.restaurant.entity.RestaurantEntity;
 import com.food.ordering.system.dataaccess.restaurant.exception.RestaurantDataAccessException;
@@ -6,7 +6,7 @@ import com.food.ordering.system.domain.valueobject.Money;
 import com.food.ordering.system.domain.valueobject.OrderId;
 import com.food.ordering.system.domain.valueobject.ProductId;
 import com.food.ordering.system.domain.valueobject.RestaurantId;
-import com.food.ordering.system.restaurant.service.dataaccess.restaurant.entity.OrderApprovalEntity;
+import com.food.ordering.system.restaurant.service.dataaccess.entity.OrderApprovalEntity;
 import com.food.ordering.system.restaurant.service.domain.entity.OrderApproval;
 import com.food.ordering.system.restaurant.service.domain.entity.OrderDetail;
 import com.food.ordering.system.restaurant.service.domain.entity.Product;
@@ -55,7 +55,7 @@ public class RestaurantDataAccessMapper {
                 .id(orderApproval.getId().getValue())
                 .restaurantId(orderApproval.getRestaurantId().getValue())
                 .orderId(orderApproval.getOrderId().getValue())
-                .status(orderApproval.getOrderApprovalStatus())
+                .status(orderApproval.getApprovalStatus())
                 .build();
     }
 
