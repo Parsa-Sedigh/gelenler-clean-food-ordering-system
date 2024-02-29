@@ -1,6 +1,6 @@
 # Section 09 - Outbox Architecture Pattern
 
-## 001 Introduction to Outbox pattern
+## 75-001 Introduction to Outbox pattern
 Outbox pattern uses local ACID transactions to create consistent distributed translations.
 
 In saga pattern, with a long running transaction, you will have a local data store transaction and also we'll have the events publishing and
@@ -37,4 +37,42 @@ Note: We should consider state changes for both happy flow and failure scenarios
 ![](img/section-9/001-outbox.png)
 ![](img/section-9/001-2-outbox-payment-failure.png)
 
-## 002 Updating Order Service database schema and config for Outbox Pattern
+## 76-002 Updating Order Service database schema and config for Outbox Pattern
+In order svc we have 3 events:
+- OrderCreatedEvent
+- OrderCancelledEvent
+- OrderPaidEvent
+
+The first two events are used to publish a message to the payment_request topic and they will trigger the payment svc(payment svc is listening
+to that topic).
+
+OrderPaidEvent is used to publish a message on restaurant_approval_request topic and it will trigger restaurant svc.
+
+So in order svc, we have two types of events:
+
+One is for payment svc and the other type is for restaurant svc.
+
+With outbox pattern, we will persist the events to a DB table. But if we keep all these types of events in the same outbox table,
+we will be putting unrelated events in the same table. So we use two outbox tables in the order svc: One is for payment svc and one is for
+restaurant svc. So create these tables:
+- payment_outbox
+- restaurant_approval_outbox
+
+We pull the outbox table in a 10s interval. On prod, you want to set this value to less than 10s depending on the processing time of
+a saga op. Ideally, these the outbox-scheduler-fixed-rate shouldn't be more than 2s.
+
+## 77-003 Refactoring Order domain layer Adding Outbox models & Updating ports
+
+
+## 78-004 Refactoring Order domain layer Adding Outbox scheduler
+## 79-005 Refactoring Order domain layer Adding Outbox cleaner scheduler for Payment
+## 80-006 Refactoring Order domain layer Adding Outbox schedulers for Approval
+## 81-007 Refactoring Order domain layer Updating OrderCreate Command Handler
+## 82-008 Refactoring Order domain layer Updating Order Payment Saga - Part 1
+## 83-009 Refactoring Order domain layer Updating Order Payment Saga - Part 2
+## 84-010 Refactoring Order domain layer Updating Order Approval Saga
+## 85-011 Updating the Order Application Service Test for Outbox pattern changes
+## 86-012 Refactoring Order Data Access module for Outbox pattern
+## 87-013 Refactoring Order Messaging module for Outbox pattern - Part 1
+## 88-014 Refactoring Order Messaging module for Outbox pattern - Part 2
+## 89-015 Testing Order Payment Saga
