@@ -124,7 +124,14 @@ then that tx will be used, otherwise a new tx will be opened.
 ## 79-005 Refactoring Order domain layer Adding Outbox cleaner scheduler for Payment
 We need another scheduler beside OrderPaymentScheduler to clean the data from outbox table.
 
+When the outbox status is updated as completed, we can actually delete that data from the outbox table. This will prevent the outbox table from
+getting too large which could affect the app perf. So create `PaymentOutboxCleanerScheduler`.
+
+Note: Before deleting the completed outbox events of order payment outbox table, you might also create an archive table and move the data
+there. Then you can use that table along with the logs for analyzing the system.
+
 ## 80-006 Refactoring Order domain layer Adding Outbox schedulers for Approval
+
 ## 81-007 Refactoring Order domain layer Updating OrderCreate Command Handler
 ## 82-008 Refactoring Order domain layer Updating Order Payment Saga - Part 1
 ## 83-009 Refactoring Order domain layer Updating Order Payment Saga - Part 2
