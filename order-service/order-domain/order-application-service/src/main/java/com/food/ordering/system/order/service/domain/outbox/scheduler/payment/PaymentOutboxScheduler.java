@@ -55,6 +55,7 @@ public class PaymentOutboxScheduler implements OutboxScheduler {
              the getPaymentOutboxMessageByOutboxStatusAndSagaStatus() won't return the same outbox message. Because we are
              looking for OutboxStatus.STARTED. This way we prevent pulling the same event twice. However, depending on the response time
               of kafka cluster to producer, the updateOutboxStatus() may not be called before the second run of the scheduler method.
+              Because we could be waiting for the response, but another schedule call gets triggered!
               So it means the same outbox message could be published more than once in some rare cases when the execution is
               delayed because of CPU decides to run some other threads or processes or because of a network delay from kafka cluster to
               producer. This can not be avoided with strict lock and wait implementations. But those types of locking will also slow down
