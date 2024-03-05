@@ -31,6 +31,7 @@
     <spring-kafka.version>3.1.1</spring-kafka.version>
     <kafka-avro-serializer.version>7.3.3</kafka-avro-serializer.version>
     <avro.version>1.11.3</avro.version>
+    <jakarta.validation-api.version>2.0.2</jakarta.validation-api.version>
   </properties>
 
   <dependencyManagement>
@@ -167,6 +168,12 @@
         <groupId>com.food.ordering.system</groupId>
         <artifactId>outbox</artifactId>
         <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>jakarta.validation</groupId>
+        <artifactId>jakarta.validation-api</artifactId>
+        <version>${jakarta.validation-api.version}</version>
       </dependency>
 
       <dependency>

@@ -62,10 +62,68 @@ We pull the outbox table in a 10s interval. On prod, you want to set this value 
 a saga op. Ideally, these the outbox-scheduler-fixed-rate shouldn't be more than 2s.
 
 ## 77-003 Refactoring Order domain layer Adding Outbox models & Updating ports
+We will implement the scheduler package later, as it will require to use the port definitions. So let's first create the output ports in the
+ports package.
 
+Output ports are nothing but interfaces to be implemented in the infrastructure modules(dataacess and messaging) and the domain layer will
+simply use the interfaces and inject them at runtime.
+
+Create `PaymentOutboxRepository` interface in output port package.
+
+Why we pass BiConsumer to publish() method in `PaymentRequestMessagePublisher`?
+
+A: Because we want to update outbox status as completed or failed depending on the result of the publish method. That interface will be
+implemented in the messaging module with an adapter that will use kafka producer and only in that adapter we will know that if 
+kafka producer `send` method successfully sent the data or not.
+
+Note: Kafka producer send() method is an async method and it uses a callback method to be called later. When we send the BiConsumer as a param
+to the publish method, we will be able to call it in the kafka producer callback methods.
+
+Kafka producer callback methods handle failure and success cases. We call accept() method of BiConsumer in those failure and success
+methods of kafka producer and update the outbox status in the local DB.
+
+Note: In the end, we won't need `OrderCreatedPaymentRequestMessagePublisher`, `OrderCancelledPaymentRequestMessagePublisher` and
+`OrderPaidRestaurantRequestMessagePublisher` because we will use the outbox message publisher like `PaymentRequestMessagePublisher` and 
+`RestaurantApprovalRequestMessagePublisher` for each type of event and separate them in the outbox message obj using the payload obj
+which is the domain event, for example, it has the payment order status for payment outbox message and for approval outbox message,
+it has restaurant order status to make this separation.
+
+So we deleted those old event publishers that I mentioned(commented them out).
 
 ## 78-004 Refactoring Order domain layer Adding Outbox scheduler
+We didn't create any bean beside configuration bean in config package of outbox submodule of infrastructure module, but you may 
+create an object mapper bean if you need custom object mapper configuration. Remember that we use object mapper for json serialization
+of the domain events.
+
+With spring-boot-starter-json dep, a default object mapper bean is created automatically and using this default bean will be
+enough for us. In case you need to add some specific properties of the object mapper bean, you can create it in SchedulerConfig class
+and for example add FAIL_ON_UNKNOWN_PROPERTIES false which will prevent failing if it encounters unknown json properties during
+deserialization. But we don't customize any beans there.
+
+To do payment outbox repository ops, create a helper class named `PaymentOutboxHelper` instead of injecting the
+repository directly in `PaymentOutboxScheduler`.
+
+Note: Made the `SagaConstants` class final and added a private constructor, because we don't want anyone to create an instance of that
+class which is unnecessary.
+
+Use `@Transactional(readOnly = true)` because this method doesn't change the state and only gets data.
+
+In the payment outbox table, we will have the domain events for two types of events:
+- order created
+- order cancelling
+
+Order svc triggers the payment svc(actually it's not direct messaging, payment svc is listening to kafka topic) for these two types of events
+and in the orderStatusToSagaStatus method of OrderSagaHelper, we set the saga status as STARTED for a newly created order which is in
+PENDING state. And we set saga status to COMPENSATING for an order that is in the CANCELLING status. So when we pass STARTED and COMPENSATING
+as saga status to getPaymentOutboxMessageByOutboxStatusAndSagaStatus(), we actually ask for order pending or order cancelling events which are
+the two types of events that can be in the payment_outbox table.
+
+Note: Default propagation methods for a transaction is required. So if there's a tx already open when the method with @Transactional is called,
+then that tx will be used, otherwise a new tx will be opened.
+
 ## 79-005 Refactoring Order domain layer Adding Outbox cleaner scheduler for Payment
+We need another scheduler beside OrderPaymentScheduler to clean the data from outbox table.
+
 ## 80-006 Refactoring Order domain layer Adding Outbox schedulers for Approval
 ## 81-007 Refactoring Order domain layer Updating OrderCreate Command Handler
 ## 82-008 Refactoring Order domain layer Updating Order Payment Saga - Part 1
