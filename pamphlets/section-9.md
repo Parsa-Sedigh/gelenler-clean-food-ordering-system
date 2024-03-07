@@ -131,6 +131,10 @@ Note: Before deleting the completed outbox events of order payment outbox table,
 there. Then you can use that table along with the logs for analyzing the system.
 
 ## 80-006 Refactoring Order domain layer Adding Outbox schedulers for Approval
+Note: It's a good idea to create a dashboard for failed outbox messages, possibly with alerting option and list and analyze them.
+We won't delete them in the outbox cleaner classes. We only delete the COMPLETED outbox messages. Because FAILED ops are not in the final state.
+It is a situation that needs to be resolved because OutboxStatus is only set to `FAILED` in case kafka producer `send` method is failed.
+That could be a network issue or an issue on kafka cluster.
 
 ## 81-007 Refactoring Order domain layer Updating OrderCreate Command Handler
 ## 82-008 Refactoring Order domain layer Updating Order Payment Saga - Part 1
