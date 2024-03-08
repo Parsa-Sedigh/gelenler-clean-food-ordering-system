@@ -26,7 +26,7 @@ public class OrderCreateHelper {
     private final CustomerRepository customerRepository;
     private final RestaurantRepository restaurantRepository;
     private final OrderDataMapper orderDataMapper;
-    private final OrderCreatedPaymentRequestMessagePublisher orderCreatedPaymentRequestMessagePublisher;
+//    private final OrderCreatedPaymentRequestMessagePublisher orderCreatedPaymentRequestMessagePublisher;
 
     /* Inject the fields using constructor injection. */
     public OrderCreateHelper(OrderDomainService orderDomainService,
@@ -34,15 +34,25 @@ public class OrderCreateHelper {
                              CustomerRepository customerRepository,
                              RestaurantRepository restaurantRepository,
                              OrderDataMapper orderDataMapper,
-                             OrderCreatedPaymentRequestMessagePublisher orderCreatedPaymentRequestMessagePublisher) {
+//                             OrderCreatedPaymentRequestMessagePublisher orderCreatedPaymentRequestMessagePublisher
+    ) {
         this.orderDomainService = orderDomainService;
         this.orderRepository = orderRepository;
         this.customerRepository = customerRepository;
         this.restaurantRepository = restaurantRepository;
         this.orderDataMapper = orderDataMapper;
-        this.orderCreatedPaymentRequestMessagePublisher = orderCreatedPaymentRequestMessagePublisher;
+//        this.orderCreatedPaymentRequestMessagePublisher = orderCreatedPaymentRequestMessagePublisher;
     }
 
+    /* You may remove @Transactional here, because we have @Transactional in the caller of this method which is
+     OrderCreateCommandHandler.createOrder(). But you can also keep this, because the inner @Transactional will use the
+     outer tx by default. Since the default propagation method is required in spring.
+
+      So if there is a tx, it will use the existing tx, otherwise it will create a new one and because of this, keeping the
+      @Transactional in the inner method is OK.
+
+      Also, it's actually better to keep @Transactional here as well because in case this is called from another method that doesn't have
+      @Transactional.*/
     @Transactional
     public OrderCreatedEvent persistOrder(CreateOrderCommand createOrderCommand) {
         // does customer of the order exist?
@@ -53,7 +63,8 @@ public class OrderCreateHelper {
 
         /* validate and initiate order in domain core and then save it using repository.*/
         OrderCreatedEvent orderCreatedEvent = orderDomainService.validateAndInitiateOrder(order, restaurant,
-                orderCreatedPaymentRequestMessagePublisher);
+//                orderCreatedPaymentRequestMessagePublisher
+        );
 
         saveOrder(order);
 

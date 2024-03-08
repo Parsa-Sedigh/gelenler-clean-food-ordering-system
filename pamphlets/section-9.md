@@ -136,7 +136,16 @@ We won't delete them in the outbox cleaner classes. We only delete the COMPLETED
 It is a situation that needs to be resolved because OutboxStatus is only set to `FAILED` in case kafka producer `send` method is failed.
 That could be a network issue or an issue on kafka cluster.
 
+We won't publish the events directly anywhere in our code. Instead, only the scheduler publishes the code.
+
 ## 81-007 Refactoring Order domain layer Updating OrderCreate Command Handler
+Now in `OrderCreateCommandHandler`, we won't publish the event directly. Instead, we will persist the event in the local DB and use
+scheduler to fire the event.
+
+By default, spring uses spring proxy AOP and all AOP functionality provided by spring, including @Transactional, will only be taken into
+account if the call goes through the proxy. That means the annotated method should be invoked from another bean. 
+Also the annotated method should be public(in order to for example use @Transactional).
+
 ## 82-008 Refactoring Order domain layer Updating Order Payment Saga - Part 1
 ## 83-009 Refactoring Order domain layer Updating Order Payment Saga - Part 2
 ## 84-010 Refactoring Order domain layer Updating Order Approval Saga
