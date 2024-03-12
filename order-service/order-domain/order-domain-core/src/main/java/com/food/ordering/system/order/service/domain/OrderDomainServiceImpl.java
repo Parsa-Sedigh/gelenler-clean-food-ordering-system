@@ -22,8 +22,9 @@ requirements(here, it uses Order and Restaurant aggregate roots). */
 public class OrderDomainServiceImpl implements OrderDomainService {
     @Override
     public OrderCreatedEvent validateAndInitiateOrder(Order order,
-                                                      Restaurant restaurant,
-                                                      DomainEventPublisher<OrderCreatedEvent> orderCreatedEventDomainEventPublisher) {
+                                                      Restaurant restaurant
+//                                                      DomainEventPublisher<OrderCreatedEvent> orderCreatedEventDomainEventPublisher
+    ) {
         validateRestaurant(restaurant);
         setOrderProductInformation(order, restaurant);
         order.validateOrder();
@@ -31,16 +32,22 @@ public class OrderDomainServiceImpl implements OrderDomainService {
 
         log.info("Order with id: {} is initialized", order.getId().getValue());
 
-        return new OrderCreatedEvent(order, ZonedDateTime.now(ZoneId.of(UTC)), orderCreatedEventDomainEventPublisher);
+        return new OrderCreatedEvent(order, ZonedDateTime.now(ZoneId.of(UTC))
+//                orderCreatedEventDomainEventPublisher
+        );
     }
 
     @Override
-    public OrderPaidEvent payOrder(Order order, DomainEventPublisher<OrderPaidEvent> orderPaidEventDomainEventPublisher) {
+    public OrderPaidEvent payOrder(Order order
+//                                   DomainEventPublisher<OrderPaidEvent> orderPaidEventDomainEventPublisher
+    ) {
         order.pay();
 
         log.info("Order with id: {} is paid", order.getId().getValue());
 
-        return new OrderPaidEvent(order, ZonedDateTime.now(ZoneId.of(UTC)), orderPaidEventDomainEventPublisher);
+        return new OrderPaidEvent(order, ZonedDateTime.now(ZoneId.of(UTC))
+//                orderPaidEventDomainEventPublisher
+        );
     }
 
     /* This method doesn't return an event because it's a possible last step in order processing and after approval, we don't need to
@@ -57,13 +64,16 @@ public class OrderDomainServiceImpl implements OrderDomainService {
 
     @Override
     public OrderCancelledEvent cancelOrderPayment(Order order,
-                                                  List<String> failureMessages,
-                                                  DomainEventPublisher<OrderCancelledEvent> orderCancelledEventDomainEventPublisher) {
+                                                  List<String> failureMessages
+//                                                  DomainEventPublisher<OrderCancelledEvent> orderCancelledEventDomainEventPublisher
+    ) {
         order.initCancel(failureMessages);
 
         log.info("Order payment is cancelling for order id: {}", order.getId().getValue());
 
-        return new OrderCancelledEvent(order, ZonedDateTime.now(ZoneId.of(UTC)), orderCancelledEventDomainEventPublisher);
+        return new OrderCancelledEvent(order, ZonedDateTime.now(ZoneId.of(UTC))
+//                orderCancelledEventDomainEventPublisher
+        );
     }
 
     /* This is a possible last step, so we don't return an event(although you could, if the client is consuming the event returned here). */

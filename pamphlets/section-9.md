@@ -138,6 +138,8 @@ That could be a network issue or an issue on kafka cluster.
 
 We won't publish the events directly anywhere in our code. Instead, only the scheduler publishes the code.
 
+We won't fire events directly with outbox pattern. Instead, we use outbox table to hold the events and fire them later with a scheduler.
+
 ## 81-007 Refactoring Order domain layer Updating OrderCreate Command Handler
 Now in `OrderCreateCommandHandler`, we won't publish the event directly. Instead, we will persist the event in the local DB and use
 scheduler to fire the event.
@@ -147,6 +149,20 @@ account if the call goes through the proxy. That means the annotated method shou
 Also the annotated method should be public(in order to for example use @Transactional).
 
 ## 82-008 Refactoring Order domain layer Updating Order Payment Saga - Part 1
+Saga flow:
+1. create a OrderPaymentOutboxMessage from OrderCreatedEvent in OrderCreateCommandHandler with STARTED outbox status
+2. PaymentOutboxScheduler pulled this data from the DB table and published it to the kafka topic
+3. payment svc reads the topic, processes the payment and then writes results to the payment response topic
+4. order svc listens to payment response topic in PaymentResponseKafkaListener and OrderPaymentSaga.process() is called
+5. update the order as paid in local DB and get OrderPaidEvent
+6. update payment outbox record with the new order and saga status values
+7. fire an event to trigger the restaurant approval phase
+
+Note: Without outbox pattern, we were firing an event in the PaymentResponseMessageListener.paymentCompleted() after the
+PaymentResponseMessageListenerImpl.process() completed the tx and returns. But now, with outbox, instead of firing the events directly,
+we need to save it to local DB and to save the approval event, we use approval outbox table. To do this,
+inject ApprovalOutboxHelper in OrderPaymentSaga.
+
 ## 83-009 Refactoring Order domain layer Updating Order Payment Saga - Part 2
 ## 84-010 Refactoring Order domain layer Updating Order Approval Saga
 ## 85-011 Updating the Order Application Service Test for Outbox pattern changes
