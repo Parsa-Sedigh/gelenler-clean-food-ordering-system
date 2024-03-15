@@ -200,7 +200,14 @@ this thread will also return an empty result(talking about process() method of O
 directly.
 
 ## 84-010 Refactoring Order domain layer Updating Order Approval Saga
+Let's say two threads try to commit the changes after reading the same data and the @Version version field of that data is 0.
+Since the op is an UPDATE op, only one of them will get the write lock on DB obj and commit the changes which will increment the version
+by one. Only then, the second thread will get the lock an then it will compare the version of the row which was read at the start of the
+tx(rollback() method of OrderApprovalSaga) with the current version which is 1. Since the versions mismatch(because the original version is
+0 and now is 1), the persistent provider will throw OptimisticLockingException and the changes of the second thread or tx will be roll backed.
 
+There is also a unique index on type, saga_id, saga_status cols on payment_outbox_table as in the approval_outbox_table. So it won't be
+possible to insert the same data into the payment_outbox_table even if there was no optimistic lock checks.
 
 ## 85-011 Updating the Order Application Service Test for Outbox pattern changes
 ## 86-012 Refactoring Order Data Access module for Outbox pattern
