@@ -164,9 +164,56 @@ we need to save it to local DB and to save the approval event, we use approval o
 inject ApprovalOutboxHelper in OrderPaymentSaga.
 
 ## 83-009 Refactoring Order domain layer Updating Order Payment Saga - Part 2
+How does optimistic locking work?
+
+When you read data from DB, you'll get a version column with a value(initially it will be zero). Then after running some processing logic,
+when you want to update the original data, it will check the version field from DB. If the version is different, that means some other
+tx has updated this data. If the versions are the same, the original tx will update the data and increment the version by one.
+
+During the update of `OrderPaymentOutboxMessage` using the save() method, the version is incremented and the changes will be committed before
+returning from the method.
+
+Now imagine two threads enter the process() method. Both read the same outbox message(STARTED) with the same version and both pass the first
+if condition, because both has the outbox message with STARTED saga status. Then both come to the paymentOutboxHelper.save() .
+With optimistic locking with a version field, when these two threads try to update the same row simultaneously, one of them will get the lock
+and do the update and the other one will wait till the first one commits.
+
+When the lock is released, second thread gets the lock, but the version is already incremented by thread 1 and for therefore it won't be
+the same version for thread 2 that it got when it first fetched the data at the start of the process(). In that case, we will get an
+`OptimisticLockException` and the operation of the second thread will be rolled back.
+
+The downside of using optimistic locking is this rollback op. If you have too much collisions, there will be more rollbacks which is not good for
+perf. But with less collisions, like in our case, we would expect only a small amount of collisions here, it will perform better than
+pessimist lock which will lock the row with a select for update manner and it will even prevent reading the data from another tx.
+
+For monetary ops, it's still better to use pessimistic locking or constraints but for most other ops, optimistic locking is fine.
+
+Another scenario is first thread gets the outbox obj and save it, but the method is not completed yet. That means the data is not committed yet.
+Then another thread tries to read the same outbox message(record) from DB. In this case, there will be different behaviors depending on the
+isolation level of DB. If the DB runs with uncommitted read, then the second thread won't find the record because although the data is
+uncommitted(by the first thread or tx), it is changed, there is no data with the STARTED status anymore. So the second thread will
+return directly and won't execute the process() method.
+
+But if the isolation level is read-committed which is the default isolation level in postgres, then the second thread will 
+wait the first tx to be committed and only will get the data when it is updated and since the status will be updated,
+this thread will also return an empty result(talking about process() method of OrderPaymentSaga). So the second thread will again return
+directly.
+
 ## 84-010 Refactoring Order domain layer Updating Order Approval Saga
+
+
 ## 85-011 Updating the Order Application Service Test for Outbox pattern changes
 ## 86-012 Refactoring Order Data Access module for Outbox pattern
 ## 87-013 Refactoring Order Messaging module for Outbox pattern - Part 1
 ## 88-014 Refactoring Order Messaging module for Outbox pattern - Part 2
 ## 89-015 Testing Order Payment Saga
+016 Updating Payment database schema, config and package structure for Outbox
+017 Refactoring Payment domain layer Adding Outbox schedulers
+018 Refactoring Payment Data Access module for Outbox pattern
+019 Refactoring Payment Messaging module for Outbox pattern
+020 Refactoring Payment domain layer Updating Message listener implementation
+021 Testing Payment Request Message Listener for double payment
+022 Refactoring Restaurant Service for Outbox pattern - Part 1
+023 Refactoring Restaurant Service for Outbox pattern - Part 2
+024 Testing the application end-to-end with Outbox pattern changes
+025 Testing failure scenarios
