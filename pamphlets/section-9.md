@@ -210,6 +210,7 @@ There is also a unique index on type, saga_id, saga_status cols on payment_outbo
 possible to insert the same data into the payment_outbox_table even if there was no optimistic lock checks.
 
 ## 85-011 Updating the Order Application Service Test for Outbox pattern changes
+
 ## 86-012 Refactoring Order Data Access module for Outbox pattern
 ## 87-013 Refactoring Order Messaging module for Outbox pattern - Part 1
 ## 88-014 Refactoring Order Messaging module for Outbox pattern - Part 2

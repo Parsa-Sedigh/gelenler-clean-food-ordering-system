@@ -7,8 +7,8 @@ public final class EmptyEvent implements DomainEvent<Void> {
     /* Add a private constructor because this EmptyEvent is just a marker class and sharing the same instance among different classes is OK.*/
     private EmptyEvent() {}
 
-    @Override
-    public void fire() {
-
-    }
+//    @Override
+//    public void fire() {
+//
+//    }
 }

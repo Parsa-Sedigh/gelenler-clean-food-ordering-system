@@ -21,6 +21,6 @@ public class RestaurantApprovalRequestMessageListenerImpl implements RestaurantA
 
         /* After persisting the changes into the restaurant local DB, fire this event which will be used by the order service to
         continue with the op. */
-        orderApprovalEvent.fire();
+//        orderApprovalEvent.fire();
     }
 }
