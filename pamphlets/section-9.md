@@ -16,7 +16,7 @@ service, in kafka, or in network communication. To resolve this issue, we need t
 solution.
 
 We will be using pulling outbox table with a scheduler and keep the state of saga, outbox and order, in the outbox table for each
-microservice.
+microservice. We persist the events in the outbox tables and use schedulers to read and publish the events(the rows of outbox tables).
 
 In outbox pattern you don't publish events directly, instead you keep your events in the local DB table called outbox table.
 This table belongs to the same DB that you use for local DB ops. So that you can use a single ACID transaction to complete your DB ops in
@@ -212,7 +212,10 @@ possible to insert the same data into the payment_outbox_table even if there was
 ## 85-011 Updating the Order Application Service Test for Outbox pattern changes
 
 ## 86-012 Refactoring Order Data Access module for Outbox pattern
+
 ## 87-013 Refactoring Order Messaging module for Outbox pattern - Part 1
+
+
 ## 88-014 Refactoring Order Messaging module for Outbox pattern - Part 2
 ## 89-015 Testing Order Payment Saga
 016 Updating Payment database schema, config and package structure for Outbox

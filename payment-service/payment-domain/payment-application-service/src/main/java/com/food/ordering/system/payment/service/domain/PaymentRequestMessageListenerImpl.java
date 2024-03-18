@@ -59,6 +59,6 @@ public class PaymentRequestMessageListenerImpl implements PaymentRequestMessageL
 //            paymentFailedMessagePublisher.publish((PaymentFailedEvent) paymentEvent);
 //        }
 
-        paymentEvent.fire();
+//        paymentEvent.fire();
     }
 }

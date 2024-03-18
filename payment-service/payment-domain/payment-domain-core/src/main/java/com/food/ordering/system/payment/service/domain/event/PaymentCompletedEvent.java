@@ -17,9 +17,9 @@ public class PaymentCompletedEvent extends PaymentEvent{
         this.paymentCompletedMessagePublisher = domainEventPublisher;
     }
 
-    @Override
-    public void fire() {
-        /* publish requires a DomainEvent and we're currently inside a DomainEvent(this) object. Here, this refers to PaymentCompletedEvent object.*/
-        paymentCompletedMessagePublisher.publish(this);
-    }
+//    @Override
+//    public void fire() {
+//        /* publish requires a DomainEvent and we're currently inside a DomainEvent(this) object. Here, this refers to PaymentCompletedEvent object.*/
+//        paymentCompletedMessagePublisher.publish(this);
+//    }
 }

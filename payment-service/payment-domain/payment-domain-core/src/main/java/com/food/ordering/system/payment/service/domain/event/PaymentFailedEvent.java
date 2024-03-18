@@ -15,8 +15,8 @@ public class PaymentFailedEvent extends PaymentEvent {
         this.paymentFailedEventDomainEventPublisher = paymentFailedEventDomainEventPublisher;
     }
 
-    @Override
-    public void fire() {
-        paymentFailedEventDomainEventPublisher.publish(this);
-    }
+//    @Override
+//    public void fire() {
+//        paymentFailedEventDomainEventPublisher.publish(this);
+//    }
 }
