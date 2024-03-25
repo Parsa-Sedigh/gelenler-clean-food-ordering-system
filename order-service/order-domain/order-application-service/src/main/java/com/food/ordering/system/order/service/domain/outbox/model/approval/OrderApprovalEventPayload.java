@@ -15,9 +15,9 @@ import java.util.UUID;
 @AllArgsConstructor
 public class OrderApprovalEventPayload {
     @JsonProperty
-    private UUID orderId;
+    private String orderId;
     @JsonProperty
-    private UUID restaurantId;
+    private String restaurantId;
     @JsonProperty
     private BigDecimal price;
     @JsonProperty

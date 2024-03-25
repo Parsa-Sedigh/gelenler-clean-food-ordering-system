@@ -222,8 +222,13 @@ We set sagaId as the key of kafka messages so the messages belong to the same sa
 ordered because **kafka guarantees ordering in a single partition**.
 
 ## 88-014 Refactoring Order Messaging module for Outbox pattern - Part 2
+We prevent throwing an error caused by OptimisticLockingFailureException in PaymentResponseKafkaListener because the
+optimistic locking exception is not an exception that is required to be retried. It's a result of duplicate message. So logging and
+ignoring it is enough here. No-OP for optimistic locking.
 
 ## 89-015 Testing Order Payment Saga
+Let's write a test for OrderPaymentSaga to test the concurrent access and optimistic locking.
+
 016 Updating Payment database schema, config and package structure for Outbox
 017 Refactoring Payment domain layer Adding Outbox schedulers
 018 Refactoring Payment Data Access module for Outbox pattern
