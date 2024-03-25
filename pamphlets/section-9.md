@@ -214,9 +214,15 @@ possible to insert the same data into the payment_outbox_table even if there was
 ## 86-012 Refactoring Order Data Access module for Outbox pattern
 
 ## 87-013 Refactoring Order Messaging module for Outbox pattern - Part 1
+In order-messaging module> publisher.kafka package, we should only have 2 publishers and should delete the rest. Because with outbox pattern,
+we only have two interfaces in output ports of domain layer, that should be implemented in messaging module. Those interfaces are:
+PaymentRequestMessagePublisher and RestaurantApprovalRequestMessagePublisher.
 
+We set sagaId as the key of kafka messages so the messages belong to the same sagaId will be in the same partition and they will be
+ordered because **kafka guarantees ordering in a single partition**.
 
 ## 88-014 Refactoring Order Messaging module for Outbox pattern - Part 2
+
 ## 89-015 Testing Order Payment Saga
 016 Updating Payment database schema, config and package structure for Outbox
 017 Refactoring Payment domain layer Adding Outbox schedulers
