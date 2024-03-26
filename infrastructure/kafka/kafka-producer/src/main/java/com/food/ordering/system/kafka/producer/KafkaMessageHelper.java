@@ -27,9 +27,12 @@ public class KafkaMessageHelper {
 
      This callback will be called when kafka producer gets a res from kafka cluster.*/
     public <T, U> ListenableFutureCallback<SendResult<String, T>>
-    getKafkaCallback(String responseTopicName, T avroModel, U outboxMessage,
+    getKafkaCallback(String responseTopicName,
+                     T avroModel,
+                     U outboxMessage,
                      BiConsumer<U, OutboxStatus> outboxCallback,
-                     String orderId, String avroModelName) {
+                     String orderId,
+                     String avroModelName) {
         return new ListenableFutureCallback<SendResult<String, T>>() {
             @Override
             public void onFailure(Throwable ex) {

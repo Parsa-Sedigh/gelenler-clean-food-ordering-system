@@ -227,15 +227,22 @@ optimistic locking exception is not an exception that is required to be retried.
 ignoring it is enough here. No-OP for optimistic locking.
 
 ## 89-015 Testing Order Payment Saga
-Let's write a test for OrderPaymentSaga to test the concurrent access and optimistic locking.
+**Let's write an integration test for OrderPaymentSaga to test the concurrent access and optimistic locking.** We do this in `order-container` module.
+In this integration test, we will use sql files to initialize some data on postgres db.
 
-016 Updating Payment database schema, config and package structure for Outbox
-017 Refactoring Payment domain layer Adding Outbox schedulers
-018 Refactoring Payment Data Access module for Outbox pattern
-019 Refactoring Payment Messaging module for Outbox pattern
-020 Refactoring Payment domain layer Updating Message listener implementation
-021 Testing Payment Request Message Listener for double payment
-022 Refactoring Restaurant Service for Outbox pattern - Part 1
-023 Refactoring Restaurant Service for Outbox pattern - Part 2
-024 Testing the application end-to-end with Outbox pattern changes
-025 Testing failure scenarios
+When we delete from orders table(for example in OrderPaymentSagaTestCleanUp.sql), related order_items and order_address records because
+of the `ON DELETE CASCADE`.
+
+We can use countdown latch instead of thread.join() .
+
+## 90-016 Updating Payment database schema, config and package structure for Outbox
+
+## 91-017 Refactoring Payment domain layer Adding Outbox schedulers
+## 92-018 Refactoring Payment Data Access module for Outbox pattern
+## 93-019 Refactoring Payment Messaging module for Outbox pattern
+## 94-020 Refactoring Payment domain layer Updating Message listener implementation
+## 95-021 Testing Payment Request Message Listener for double payment
+## 96-022 Refactoring Restaurant Service for Outbox pattern - Part 1
+## 97-023 Refactoring Restaurant Service for Outbox pattern - Part 2
+## 98-024 Testing the application end-to-end with Outbox pattern changes
+## 99-025 Testing failure scenarios

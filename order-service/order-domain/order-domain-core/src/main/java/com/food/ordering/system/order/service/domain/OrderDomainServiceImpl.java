@@ -32,9 +32,11 @@ public class OrderDomainServiceImpl implements OrderDomainService {
 
         log.info("Order with id: {} is initialized", order.getId().getValue());
 
-        return new OrderCreatedEvent(order, ZonedDateTime.now(ZoneId.of(UTC))
+//        return new OrderCreatedEvent(order, ZonedDateTime.now(ZoneId.of(UTC))
 //                orderCreatedEventDomainEventPublisher
-        );
+//        );
+
+        return new OrderCreatedEvent(order, ZonedDateTime.now(ZoneId.of(UTC)));
     }
 
     @Override
@@ -45,9 +47,11 @@ public class OrderDomainServiceImpl implements OrderDomainService {
 
         log.info("Order with id: {} is paid", order.getId().getValue());
 
-        return new OrderPaidEvent(order, ZonedDateTime.now(ZoneId.of(UTC))
+//        return new OrderPaidEvent(order, ZonedDateTime.now(ZoneId.of(UTC))
 //                orderPaidEventDomainEventPublisher
-        );
+//        );
+
+        return new OrderPaidEvent(order, ZonedDateTime.now(ZoneId.of(UTC)));
     }
 
     /* This method doesn't return an event because it's a possible last step in order processing and after approval, we don't need to
