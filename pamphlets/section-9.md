@@ -255,6 +255,7 @@ So we won't return domain events in for example PaymentRequestHelper methods any
 ## 93-019 Refactoring Payment Messaging module for Outbox pattern
 
 ## 94-020 Refactoring Payment domain layer Updating Message listener implementation
+
 ## 95-021 Testing Payment Request Message Listener for double payment
 ## 96-022 Refactoring Restaurant Service for Outbox pattern - Part 1
 ## 97-023 Refactoring Restaurant Service for Outbox pattern - Part 2
