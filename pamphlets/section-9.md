@@ -11,9 +11,9 @@ system in inconsistent state. Instead, if you first publish the event and then t
 go even worse! Because the local DB transaction can fail, in that case, you would have already published a wrong event which 
 you should never have published. 
 
-Until now, first we complete the local DB transaction and then publish the event. But this publish op can fail because of a problem in
+**Until now, first we complete the local DB transaction and then publish the event. But this publish op can fail because of a problem in
 service, in kafka, or in network communication. To resolve this issue, we need to combine saga with outbox pattern to obtain a consistent
-solution.
+solution.**
 
 We will be using pulling outbox table with a scheduler and keep the state of saga, outbox and order, in the outbox table for each
 microservice. We persist the events in the outbox tables and use schedulers to read and publish the events(the rows of outbox tables).
@@ -236,9 +236,18 @@ of the `ON DELETE CASCADE`.
 We can use countdown latch instead of thread.join() .
 
 ## 90-016 Updating Payment database schema, config and package structure for Outbox
+Change init-schema.sql of payment svc.
+
+We pull the outbox table for 10s intervals for payment schedulers: `outbox-scheduler-fixed-rate: 10000`.
+
+We will update the outbox status of OrderOutboxMessage after getting a successful res from the message bus which is kafka.
+
+We won't use the old publisher interfaces like PaymentCompletedMessagePublisher anymore.
 
 ## 91-017 Refactoring Payment domain layer Adding Outbox schedulers
+
 ## 92-018 Refactoring Payment Data Access module for Outbox pattern
+
 ## 93-019 Refactoring Payment Messaging module for Outbox pattern
 ## 94-020 Refactoring Payment domain layer Updating Message listener implementation
 ## 95-021 Testing Payment Request Message Listener for double payment

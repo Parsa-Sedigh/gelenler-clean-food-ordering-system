@@ -46,6 +46,7 @@ CREATE TABLE "payment".credit_history
     CONSTRAINT credit_history_pkey PRIMARY KEY (id)
 );
 
+-- To be sure it is created, we drop and recreate it.
 DROP TYPE IF EXISTS outbox_status;
 CREATE TYPE outbox_status AS ENUM ('STARTED', 'COMPLETED', 'FAILED');
 
@@ -58,7 +59,7 @@ CREATE TABLE "payment".order_outbox
     created_at TIMESTAMP WITH TIME ZONE NOT NULL,
     processed_at TIMESTAMP WITH TIME ZONE,
     type character varying COLLATE pg_catalog."default" NOT NULL,
-    payload jsonb NOT NULL,
+    payload jsonb NOT NULL, -- json representation of the domain event
     outbox_status outbox_status NOT NULL,
     payment_status payment_status NOT NULL,
     version integer NOT NULL,
