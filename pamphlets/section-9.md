@@ -242,7 +242,11 @@ We pull the outbox table for 10s intervals for payment schedulers: `outbox-sched
 
 We will update the outbox status of OrderOutboxMessage after getting a successful res from the message bus which is kafka.
 
-We won't use the old publisher interfaces like PaymentCompletedMessagePublisher anymore.
+**We won't use the old publisher interfaces like PaymentCompletedMessagePublisher anymore. Because we won't return the domain events
+and publish them directly. Instead, we persist the events into the outbox table locally and publish them later by reading them
+with schedulers.**
+
+So we won't return domain events in for example PaymentRequestHelper methods anymore.
 
 ## 91-017 Refactoring Payment domain layer Adding Outbox schedulers
 

@@ -7,15 +7,16 @@ import java.time.ZonedDateTime;
 import java.util.Collections;
 import java.util.List;
 
-public class PaymentCancelledEvent extends PaymentEvent{
-    private final DomainEventPublisher<PaymentCancelledEvent> paymentCancelledEventDomainEventPublisher;
+public class PaymentCancelledEvent extends PaymentEvent {
+//    private final DomainEventPublisher<PaymentCancelledEvent> paymentCancelledEventDomainEventPublisher;
 
     public PaymentCancelledEvent(Payment payment,
-                                 ZonedDateTime createdAt,
-                                 DomainEventPublisher<PaymentCancelledEvent> paymentCancelledEventDomainEventPublisher) {
+                                 ZonedDateTime createdAt
+//                                 DomainEventPublisher<PaymentCancelledEvent> paymentCancelledEventDomainEventPublisher
+    ) {
         /* Since failureMessages are only needed with failed payments, pass an empty list as failureMessages. */
         super(payment, createdAt, Collections.emptyList());
-        this.paymentCancelledEventDomainEventPublisher = paymentCancelledEventDomainEventPublisher;
+//        this.paymentCancelledEventDomainEventPublisher = paymentCancelledEventDomainEventPublisher;
     }
 
 //    @Override

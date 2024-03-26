@@ -6,9 +6,9 @@ import com.food.ordering.system.payment.service.domain.event.PaymentCompletedEve
 import com.food.ordering.system.payment.service.domain.event.PaymentEvent;
 import com.food.ordering.system.payment.service.domain.event.PaymentFailedEvent;
 import com.food.ordering.system.payment.service.domain.ports.input.message.listener.PaymentRequestMessageListener;
-import com.food.ordering.system.payment.service.domain.ports.output.message.publisher.PaymentCancelledMessagePublisher;
-import com.food.ordering.system.payment.service.domain.ports.output.message.publisher.PaymentCompletedMessagePublisher;
-import com.food.ordering.system.payment.service.domain.ports.output.message.publisher.PaymentFailedMessagePublisher;
+//import com.food.ordering.system.payment.service.domain.ports.output.message.publisher.PaymentCancelledMessagePublisher;
+//import com.food.ordering.system.payment.service.domain.ports.output.message.publisher.PaymentCompletedMessagePublisher;
+//import com.food.ordering.system.payment.service.domain.ports.output.message.publisher.PaymentFailedMessagePublisher;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -34,20 +34,24 @@ public class PaymentRequestMessageListenerImpl implements PaymentRequestMessageL
 
     @Override
     public void completePayment(PaymentRequest paymentRequest) {
-        PaymentEvent paymentEvent = paymentRequestHelper.persistPayment(paymentRequest);
-        fireEvent(paymentEvent);
+//        PaymentEvent paymentEvent = paymentRequestHelper.persistPayment(paymentRequest);
+//        fireEvent(paymentEvent);
+
+        paymentRequestHelper.persistPayment(paymentRequest);
     }
 
     @Override
     public void cancelPayment(PaymentRequest paymentRequest) {
-        PaymentEvent paymentEvent = paymentRequestHelper.persistCancelPayment(paymentRequest);
-        fireEvent(paymentEvent);
+//        PaymentEvent paymentEvent = paymentRequestHelper.persistCancelPayment(paymentRequest);
+//        fireEvent(paymentEvent);
+
+        paymentRequestHelper.persistCancelPayment(paymentRequest);
     }
 
-    private void fireEvent(PaymentEvent paymentEvent) {
-        log.info("Publishing payment event with payment id: {} and order id: {}",
-                paymentEvent.getPayment().getId().getValue(),
-                paymentEvent.getPayment().getOrderId().getValue());
+//    private void fireEvent(PaymentEvent paymentEvent) {
+//        log.info("Publishing payment event with payment id: {} and order id: {}",
+//                paymentEvent.getPayment().getId().getValue(),
+//                paymentEvent.getPayment().getOrderId().getValue());
 
         /* To get rid of these else if blocks which would grow over time as we add more type of events, we define the fire() method
         in DomainEvent interface which is the common interface that all of these event classes implement. */
@@ -60,5 +64,5 @@ public class PaymentRequestMessageListenerImpl implements PaymentRequestMessageL
 //        }
 
 //        paymentEvent.fire();
-    }
+//    }
 }
