@@ -255,8 +255,22 @@ So we won't return domain events in for example PaymentRequestHelper methods any
 ## 93-019 Refactoring Payment Messaging module for Outbox pattern
 
 ## 94-020 Refactoring Payment domain layer Updating Message listener implementation
+### Failure scenario
+If we have a completed outbox msg in payment outbox table for a saga id, this means that payment svc sent the msg to kafka using the 
+payment_response kafka topic and an ack received. After that, the payment_response topic will be consumed by order svc to get the
+payment status.
+
+If order svc somehow failed to process this payment res, it might ask for a payment again for the same saga id. In that case,
+if the payment svc sees an already completed outbox msg, it should not process the payment again. Instead, it will assume that
+the published payment msg is not processed by the order svc, so it should send it again.
+
+We can't rely on optimistic locking in PaymentRequestHelper of payment svc, since we don't perform an update for the outbox msg in
+`persistPayment` and `persistCancelPayment`. Remember that Optimistic locking can be used for concurrent updates of an existing db record 
+There, we only insert a new outbox msg, so we will only rely on a unique constraint violation to prevent two threads processing op and
+inserting the same outbox msg at the same time. We have the unique index in `payment.order_outbox` table.
 
 ## 95-021 Testing Payment Request Message Listener for double payment
+
 ## 96-022 Refactoring Restaurant Service for Outbox pattern - Part 1
 ## 97-023 Refactoring Restaurant Service for Outbox pattern - Part 2
 ## 98-024 Testing the application end-to-end with Outbox pattern changes
