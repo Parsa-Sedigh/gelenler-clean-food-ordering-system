@@ -64,6 +64,7 @@ ALTER TABLE restaurant.restaurant_products
         ON DELETE RESTRICT
         NOT VALID;
 
+-- this could be created by other services. So first drop if exists and then recreate it.
 DROP TYPE IF EXISTS outbox_status;
 CREATE TYPE outbox_status AS ENUM ('STARTED', 'COMPLETED', 'FAILED');
 

@@ -271,9 +271,11 @@ inserting the same outbox msg at the same time. We have the unique index in `pay
 
 ## 95-021 Testing Payment Request Message Listener for double payment
 
-
 ## 96-022 Refactoring Restaurant Service for Outbox pattern - Part 1
+We had 2 publisher interfaces before outbox. Those were: OrderApprovedMessagePublisher and OrderRejectedMessagePublisher, but now we only
+have RestaurantApprovalResponseMessagePublisher with the outbox pattern.
 
 ## 97-023 Refactoring Restaurant Service for Outbox pattern - Part 2
+
 ## 98-024 Testing the application end-to-end with Outbox pattern changes
 ## 99-025 Testing failure scenarios
