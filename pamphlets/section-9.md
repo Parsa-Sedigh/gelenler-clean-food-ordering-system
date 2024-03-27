@@ -288,3 +288,6 @@ Note: In production, it's required to archive the outbox msgs with COMPLETED sta
 outbox msgs.
 
 ## 99-025 Testing failure scenarios
+
+We will put the customer data which is in customer svc DB, into the order service DB. This will simply create a mirror of the
+customer data to be used in the order svc. And to update this data, we will use eventual consistency with CQRS pattern.
