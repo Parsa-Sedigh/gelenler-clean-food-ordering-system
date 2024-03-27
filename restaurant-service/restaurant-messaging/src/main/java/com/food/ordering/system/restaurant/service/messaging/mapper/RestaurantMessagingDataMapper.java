@@ -9,6 +9,7 @@ import com.food.ordering.system.restaurant.service.domain.entity.Product;
 import com.food.ordering.system.restaurant.service.domain.event.OrderApprovedEvent;
 import com.food.ordering.system.restaurant.service.domain.event.OrderRejectedEvent;
 import com.food.ordering.system.restaurant.service.dto.RestaurantApprovalRequest;
+import com.food.ordering.system.restaurant.service.outbox.model.OrderEventPayload;
 import org.springframework.stereotype.Component;
 
 import java.util.UUID;
@@ -61,6 +62,19 @@ public class RestaurantMessagingDataMapper {
                 .setCreatedAt(orderRejectedEvent.getCreatedAt().toInstant())
                 .setOrderApprovalStatus(OrderApprovalStatus.valueOf(orderRejectedEvent.getOrderApproval().getApprovalStatus().name()))
                 .setFailureMessages(orderRejectedEvent.getFailureMessages())
+                .build();
+    }
+
+    public RestaurantApprovalResponseAvroModel
+    orderEventPayloadToRestaurantApprovalResponseAvroModel(String sagaId, OrderEventPayload orderEventPayload) {
+        return RestaurantApprovalResponseAvroModel.newBuilder()
+                .setId(UUID.randomUUID())
+                .setSagaId(UUID.fromString(sagaId))
+                .setOrderId(UUID.fromString(orderEventPayload.getOrderId()))
+                .setRestaurantId(UUID.fromString(orderEventPayload.getRestaurantId()))
+                .setCreatedAt(orderEventPayload.getCreatedAt().toInstant())
+                .setOrderApprovalStatus(OrderApprovalStatus.valueOf(orderEventPayload.getOrderApprovalStatus()))
+                .setFailureMessages(orderEventPayload.getFailureMessages())
                 .build();
     }
 }

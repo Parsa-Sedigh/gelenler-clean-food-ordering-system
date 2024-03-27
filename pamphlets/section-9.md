@@ -278,4 +278,5 @@ have RestaurantApprovalResponseMessagePublisher with the outbox pattern.
 ## 97-023 Refactoring Restaurant Service for Outbox pattern - Part 2
 
 ## 98-024 Testing the application end-to-end with Outbox pattern changes
+
 ## 99-025 Testing failure scenarios
