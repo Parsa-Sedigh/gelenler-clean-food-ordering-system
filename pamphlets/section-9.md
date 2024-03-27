@@ -278,5 +278,13 @@ have RestaurantApprovalResponseMessagePublisher with the outbox pattern.
 ## 97-023 Refactoring Restaurant Service for Outbox pattern - Part 2
 
 ## 98-024 Testing the application end-to-end with Outbox pattern changes
+We won't run the init_kafka.yml because we already created kafka topics. If you want to start with fresh data you can run init_kafka.yml
+which will delete and create the topics. Also, you may clean the volumes for zookeeper and kafka cluster to erase all previous data.
+
+After creating an order, initially it's in PENDING state and then PAID state and then APPROVED. It takes about 10s to change the state.  
+Because we have set the outbox schedulers interval to 10s and we're using outbox pattern to complete the saga flow.
+
+Note: In production, it's required to archive the outbox msgs with COMPLETED status to another table for future investigations of the
+outbox msgs.
 
 ## 99-025 Testing failure scenarios

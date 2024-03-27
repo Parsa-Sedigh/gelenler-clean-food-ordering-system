@@ -49,8 +49,13 @@ Then run the microservices(run the application service in container module of ea
 
 Note: For now, the customer svc will just create the customer DB objects and then exits.
 
-Use kafka cat or kafka tool to see the data in partitions. The data is hex coded, you can use a hex decoder like online-toolz.com to
+Use kafka cat or kafka tool to see the data in partitions. The data(the `key` and `value`) is hex coded, you can use a hex decoder like online-toolz.com to
 decode it. After decoding, you would see the serialized data in avro format, but the field values are still readable.
+
+- Key: We use the sagaId as the key of the kafka messages. So after decoding the hex, we would get the sagaId.
+- value: Since value is in avro format, after decoding the hex format of it, we would get the avro serialized format,
+we can't see the real value yet. To see it, we need to deserialize it with avro deserializer. The kafka consumers have this deserializer,
+so we can see the values in services.
 
 At the end, run:
 ```shell

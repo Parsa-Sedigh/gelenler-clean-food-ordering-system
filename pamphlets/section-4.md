@@ -78,7 +78,7 @@ cluster zookeeper hosts: zookeeper:2181
 `
 
 To test the persistence of topics data, shutdown zookeeper and kafka cluster and start them again:
-```yaml
+```shell
 docker-compose -f common.yml -f zookeeper.yml down
 docker-compose -f commony.yml -f kafka_cluster.yml down
 
