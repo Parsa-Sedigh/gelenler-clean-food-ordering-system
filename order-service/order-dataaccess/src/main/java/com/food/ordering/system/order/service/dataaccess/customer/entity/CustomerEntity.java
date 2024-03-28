@@ -10,14 +10,32 @@ import java.util.UUID;
 /* We use a materialized view from the customer DB to query the customer information in the order domain layer.
 
 Note: We use this entity just to check if customer exists or not(simplified logic). So we don't add any other fields. */
+//@Getter
+//@Setter
+//@Builder
+//@NoArgsConstructor
+//@AllArgsConstructor
+//@Table(name = "order_customer_m_view", schema = "customer")
+//@Entity
+//public class CustomerEntity {
+//    @Id
+//    private UUID id;
+//}
+
+////////////
+
 @Getter
 @Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "order_customer_m_view", schema = "customer")
+@Table(name = "customers")
 @Entity
 public class CustomerEntity {
     @Id
     private UUID id;
+
+    private String username;
+    private String firstName;
+    private String lastName;
 }

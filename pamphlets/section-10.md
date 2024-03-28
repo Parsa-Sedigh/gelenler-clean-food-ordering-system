@@ -58,5 +58,8 @@ Order of developing:
 Customer entity is actually the aggregate root.
 
 ## 103-004 Updating Order Service to use local database table with CQRS pattern
+Create the customers table in order schema.
+
+The input port of domain layer(defined in application-service) is implemented in itself.
 
 ## 104-005 Running Order and Customer Services to test CQRS pattern
