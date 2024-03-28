@@ -37,7 +37,7 @@ Instead of doing this cross-DB call, we will make a call to a local customer tab
 this customer table up-to-date when the customer table in the customer svc is updated.
 
 To achieve this, we will use cqrs pattern and while updating customer info in the customer svc, we will publish an event in
-kafka topic and then listen these events from order svc to insert the new customer info in the order db.
+kafka topic and then listen these events from order svc to insert the new customer info in the order's customer table.
 
 To build the java class from avro files, run mvn install on kafka-model module:
 ```shell
@@ -55,6 +55,7 @@ Order of developing:
 5. application module for REST endpoints
 
 ## 102-003 Implementing Customer Service modules
+Customer entity is actually the aggregate root.
 
 ## 103-004 Updating Order Service to use local database table with CQRS pattern
 
