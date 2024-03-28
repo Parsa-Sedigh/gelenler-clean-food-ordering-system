@@ -3,19 +3,15 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>com.food.ordering.system</groupId>
-        <artifactId>gelenler-clean-food-ordering-system</artifactId>
+        <artifactId>customer-service</artifactId>
         <version>1.0-SNAPSHOT</version>
     </parent>
-    <artifactId>customer-service</artifactId>
-
-    <!-- This is important. -->
+    <artifactId>customer-domain</artifactId>
     <packaging>pom</packaging>
-    <name>Archetype - customer-service</name>
+    <name>Archetype - customer-domain</name>
     <url>http://maven.apache.org</url>
     <modules>
-        <module>customer-container</module>
-        <module>customer-application</module>
-        <module>customer-messaging</module>
-        <module>customer-domain</module>
+        <module>customer-domain-core</module>
+        <module>customer-application-service</module>
     </modules>
 </project>
