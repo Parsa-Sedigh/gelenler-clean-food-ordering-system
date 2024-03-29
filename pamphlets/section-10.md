@@ -62,4 +62,18 @@ Create the customers table in order schema.
 
 The input port of domain layer(defined in application-service) is implemented in itself.
 
+a mebibyte and megabyte are often used synonymously. However mebibyte is introduced to give a more precise measurement unit and leave
+the megabyte as a rough calculation using 1,000,000 bytes instead of having the exact value.
+
+- Mebibyte(Mi): 2 to the power of 20 or 1,048,576 bytes.
+- Megabyte(Mb): 10 to the power of 6 or 1,000,000 bytes
+
 ## 104-005 Running Order and Customer Services to test CQRS pattern
+We need to create a spring bean for the CustomerDomainService. Because CustomerDomainServiceImpl
+is not a spring bean as we don't have spring dep in the domain-core module. But we still wrote the code to inject CustomerDomainService
+in CustomerCommandHandler. So we create bean config class in container module for this.
+
+After publishing the event to even store, the event-store can be used to create any type of query store. In this case, a query store
+is the customers table in order svc db. Another query store could be to push the events to elastic search and make it full text searchable.
+Or you can use it for audit purposes especially for update ops and keep the history of customer update and inserts in the event store or
+you may consume and put that data to your analytics engine to work on that data.
