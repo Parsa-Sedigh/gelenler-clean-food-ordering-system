@@ -9,7 +9,7 @@ it's a paid service by confluent. However, to use in test and dev env, we can st
 
 Go to infra repo.
 
-Clone cp-helm-chart project into the helm chart.
+**Clone cp-helm-chart project into the helm folder of infra project.**
 
 Then run in the root of infra project:
 ```shell
