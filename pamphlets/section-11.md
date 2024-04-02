@@ -73,5 +73,28 @@ docker images | grep food.ordering.system
 Now create k8s deployment files.
 
 ## 108-004 Deploying Microservices into local Kubernetes
+In infra project > helm folder, deploy the kafka cluster:
+```shell
+helm install local-confluent-kafka cp-helm-charts --version 0.6.0
+kubectl get pods
+kubectl apply -f application-deployment-local.yml
+```
+
+Note: You can't run a java app with a version that is older than the compiled version. 
+
+If you get a incompatibility version error: Remember we have `maven-compiler-plugin` in base pom.xml with the specified java version
+and this is used for `compiling` our java code. Also for creating the docker image, we use `spring-boot-maven-plugin` with build-image
+goal and this docker image sets our runtime version for java and uses maven.compiler.target property. So we have to add 
+this property and the maven.compiler.source property to the <propeties> of base pom.xml . So the java versions of compile time and runtime
+are the same.
+
+Then install `mvn clean install` and delete application deployment in infra project by:
+```shell
+kubectl delete -f application-deployment-local.yml
+kubectl apply -f application-deployment-local.yml
+kubectl get pods
+```
+
+Now all the services should be in Running state.
 
 ## 109-005 Deploying Postgres to local Kubernetes using Postgres docker image
