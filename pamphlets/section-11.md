@@ -98,3 +98,10 @@ kubectl get pods
 Now all the services should be in Running state.
 
 ## 109-005 Deploying Postgres to local Kubernetes using Postgres docker image
+After creating the deployment and service for postgres, run:
+```shell
+kubectl apply -f postgres-deployment.yml
+
+# in helm folder
+helm install local-confluent-kafka cp-helm-charts -- version 0.6.0
+```
