@@ -207,6 +207,7 @@ Everytime we need to run zookeeper and kafka-cluster, then run init-kafka compos
 ## 120-005 Creating the startup and shutdown scripts
 
 ## 121-006 Implementation changes for Change Data Capture - Part 1
+
 007 Implementation changes for Change Data Capture - Part 2
 008 Implementation changes for Change Data Capture - Part 3
 009 Running multiple instances of services  with a Jmeter performance scenario
