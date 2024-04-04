@@ -58,7 +58,7 @@ public class RestaurantApprovalRequestHelper {
     @Transactional
 //    public OrderApprovalEvent persistOrderApproval(RestaurantApprovalRequest restaurantApprovalRequest) {
     public void persistOrderApproval(RestaurantApprovalRequest restaurantApprovalRequest) {
-        if (publishIfOutboxMessageProcessed(restaurantApprovalRequest)) {
+        if (isOutboxMessageProcessed(restaurantApprovalRequest)) {
             log.info("An outbox message with saga id: {} already saved to database!",
                     restaurantApprovalRequest.getSagaId());
 
@@ -107,14 +107,15 @@ public class RestaurantApprovalRequestHelper {
         return restaurant;
     }
 
-    private boolean publishIfOutboxMessageProcessed(RestaurantApprovalRequest restaurantApprovalRequest) {
+    private boolean isOutboxMessageProcessed(RestaurantApprovalRequest restaurantApprovalRequest) {
         Optional<OrderOutboxMessage> orderOutboxMessage =
             orderOutboxHelper.getCompletedOrderOutboxMessageBySagaIdAndOutboxStatus(
                     UUID.fromString(restaurantApprovalRequest.getSagaId()), OutboxStatus.COMPLETED);
 
         if (orderOutboxMessage.isPresent()) {
-            restaurantApprovalResponseMessagePublisher.publish(orderOutboxMessage.get(),
-                    orderOutboxHelper::updateOutboxStatus);
+            // we're now using debezium
+//            restaurantApprovalResponseMessagePublisher.publish(orderOutboxMessage.get(),
+//                    orderOutboxHelper::updateOutboxStatus);
 
             return true;
         }

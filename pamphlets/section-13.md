@@ -207,9 +207,24 @@ Everytime we need to run zookeeper and kafka-cluster, then run init-kafka compos
 ## 120-005 Creating the startup and shutdown scripts
 
 ## 121-006 Implementation changes for Change Data Capture - Part 1
+We don't need the scheduler implementations that are pulling the outbox tables and processing the data. You can delete them.
+We can keep the cleaner schedulers that can be used to clean up the outbox tables.
 
-007 Implementation changes for Change Data Capture - Part 2
-008 Implementation changes for Change Data Capture - Part 3
-009 Running multiple instances of services  with a Jmeter performance scenario
-010 Using Optimistic locking & Comparing Lock strategies with Jmeter load test
-011 Comparing Change Data Capture & Pulling the Outbox table using Jmeter load test
+Also delete the kafka message publishers that are called from schedulers. Like PaymentRequestMessagePublisher and
+RestaurantApprovalMessagePublisher . We're now using debezium for publishing.
+
+We deleted the schedulers because producing outbox messages will be handled by the debezium connectors.
+
+When starting from scratch using CDC, it's good to use a table that debezium suggests as mentioned in debezium outbox event router guide.
+With this table structure, we can also use a transformer class which will extract the required fields instead of getting before and
+after objects. In that case, we don't do the state updates on the outbox tables and we can actually insert and immediately delete the
+outbox record because after the insertion, it'll be already be available in the DB tx logs. In that case, we would have to eliminate the
+delete ops just as we did for update op, so accepting if op == "c".
+
+## 122-007 Implementation changes for Change Data Capture - Part 2
+
+## 123-008 Implementation changes for Change Data Capture - Part 3
+
+## 124-009 Running multiple instances of services  with a Jmeter performance scenario
+## 125-010 Using Optimistic locking & Comparing Lock strategies with Jmeter load test
+## 126-011 Comparing Change Data Capture & Pulling the Outbox table using Jmeter load test

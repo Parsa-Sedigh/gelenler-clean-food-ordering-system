@@ -43,7 +43,7 @@ public class PaymentRequestHelper {
 //    private final PaymentCancelledMessagePublisher paymentCancelledMessagePublisher;
 //    private final PaymentFailedMessagePublisher paymentFailedMessagePublisher;
     private final OrderOutboxHelper orderOutboxHelper;
-    private final PaymentResponseMessagePublisher paymentResponseMessagePublisher;
+//    private final PaymentResponseMessagePublisher paymentResponseMessagePublisher;
 
     public PaymentRequestHelper(PaymentDomainService paymentDomainService,
                                 PaymentDataMapper paymentDataMapper,
@@ -53,8 +53,8 @@ public class PaymentRequestHelper {
 //                                PaymentCompletedMessagePublisher paymentCompletedMessagePublisher,
 //                                PaymentCancelledMessagePublisher paymentCancelledMessagePublisher,
 //                                PaymentFailedMessagePublisher paymentFailedMessagePublisher
-                                OrderOutboxHelper orderOutboxHelper,
-                                PaymentResponseMessagePublisher paymentResponseMessagePublisher
+                                OrderOutboxHelper orderOutboxHelper
+//                                PaymentResponseMessagePublisher paymentResponseMessagePublisher
     ) {
         this.paymentDomainService = paymentDomainService;
         this.paymentDataMapper = paymentDataMapper;
@@ -65,7 +65,7 @@ public class PaymentRequestHelper {
 //        this.paymentCancelledMessagePublisher = paymentCancelledMessagePublisher;
 //        this.paymentFailedMessagePublisher = paymentFailedMessagePublisher;
         this.orderOutboxHelper = orderOutboxHelper;
-        this.paymentResponseMessagePublisher = paymentResponseMessagePublisher;
+//        this.paymentResponseMessagePublisher = paymentResponseMessagePublisher;
     }
 
     // With @Transactional, it will commit the changes when we return from this method
@@ -73,7 +73,7 @@ public class PaymentRequestHelper {
     public void persistPayment(PaymentRequest paymentRequest) {
         /* If publishIfOutboxMessageProcessedForPayment() returns true, it means it republished the outbox msg, in case order svc
         could not get or process the payment svc response previously.*/
-        if (publishIfOutboxMessageProcessedForPayment(paymentRequest, PaymentStatus.COMPLETED)) {
+        if (isOutboxMessageProcessedForPayment(paymentRequest, PaymentStatus.COMPLETED)) {
             log.info("An outbox message with saga id: {} is already saved to database!", paymentRequest.getSagaId());
 
             return;
@@ -106,7 +106,7 @@ public class PaymentRequestHelper {
 
     @Transactional
     public void persistCancelPayment(PaymentRequest paymentRequest) {
-        if (publishIfOutboxMessageProcessedForPayment(paymentRequest, PaymentStatus.CANCELLED)) {
+        if (isOutboxMessageProcessedForPayment(paymentRequest, PaymentStatus.CANCELLED)) {
             log.info("An outbox message with saga id: {} is already saved to database!", paymentRequest.getSagaId());
 
             return;
@@ -175,7 +175,7 @@ public class PaymentRequestHelper {
         }
     }
 
-    private boolean publishIfOutboxMessageProcessedForPayment(PaymentRequest paymentRequest,
+    private boolean isOutboxMessageProcessedForPayment(PaymentRequest paymentRequest,
                                                               PaymentStatus paymentStatus) {
         Optional<OrderOutboxMessage> orderOutboxMessage =
                 orderOutboxHelper.getCompletedOrderOutboxMessageBySagaIdAndPaymentStatus(
@@ -184,7 +184,7 @@ public class PaymentRequestHelper {
                 );
 
         if (orderOutboxMessage.isPresent()) {
-            paymentResponseMessagePublisher.publish(orderOutboxMessage.get(), orderOutboxHelper::updateOutboxMessage);
+//            paymentResponseMessagePublisher.publish(orderOutboxMessage.get(), orderOutboxHelper::updateOutboxMessage);
 
             return true;
         }

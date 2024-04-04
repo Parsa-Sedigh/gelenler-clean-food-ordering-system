@@ -10,4 +10,11 @@
     <artifactId>common-domain</artifactId>
     <name>Archetype - common-domain</name>
     <url>http://maven.apache.org</url>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-annotations</artifactId>
+        </dependency>
+    </dependencies>
 </project>
