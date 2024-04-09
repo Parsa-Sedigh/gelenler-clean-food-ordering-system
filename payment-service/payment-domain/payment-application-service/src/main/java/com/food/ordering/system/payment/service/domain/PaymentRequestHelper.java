@@ -184,6 +184,7 @@ public class PaymentRequestHelper {
                 );
 
         if (orderOutboxMessage.isPresent()) {
+            // we don't publish anymore ourselves, the publishing is done through debezium now.
 //            paymentResponseMessagePublisher.publish(orderOutboxMessage.get(), orderOutboxHelper::updateOutboxMessage);
 
             return true;

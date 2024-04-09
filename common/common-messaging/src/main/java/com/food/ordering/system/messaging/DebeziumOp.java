@@ -8,4 +8,8 @@ public enum DebeziumOp {
     DebeziumOp(String val) {
         this.value = val;
     }
+
+    public String getValue() {
+        return value;
+    }
 }

@@ -50,11 +50,11 @@ public class RestaurantApprovalResponseKafkaListener implements KafkaConsumer<En
                         @Header(KafkaHeaders.OFFSET) List<Long> offsets) {
         log.info("{} number of restaurant approval responses received!",
                 messages.stream().filter(message ->
-                        message.getBefore() == null && DebeziumOp.CREATE.name().equals(message.getOp())
+                        message.getBefore() == null && DebeziumOp.CREATE.getValue().equals(message.getOp())
                 ).toList().size());
 
         messages.forEach(avroModel -> {
-            if (avroModel.getBefore() == null && DebeziumOp.CREATE.name().equals(avroModel.getOp())) {
+            if (avroModel.getBefore() == null && DebeziumOp.CREATE.getValue().equals(avroModel.getOp())) {
                 log.info("Incoming message in RestaurantApprovalResponseKafkaListener: {}", avroModel);
 
                 Value restaurantApprovalResponseAvroModel = avroModel.getAfter();
