@@ -1,0 +1,4 @@
+Change data capture with pessimistic locking and debezium:
+300 records(orders) -> 10 seconds
+1500 records(orders) -> 32 seconds
+3000 records(orders) -> 49 seconds

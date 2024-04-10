@@ -288,6 +288,94 @@ with the id of each msg. Remember we do the de-duplication using the data in the
 we can still use the cleaner scheduler to clean the completed msgs. This prevents the outbox table gets large.
 
 ## 124-009 Running multiple instances of services  with a Jmeter performance scenario
+In intellij, go to edit configuration, create 3 applications for order, payment and restaurant svcs and for the first order svc,
+click on `modify options` and choose: `Add VM options` and set these for apps:
+- order svc 1: -Dserver.port=8181 -Dkafka-consumer-config.concurrency-level=1
+- order svc 2: -Dserver.port=8182 -Dkafka-consumer-config.concurrency-level=1 -Dspring.sql.init.mode=never
+- order svc 2: -Dserver.port=8183 -Dkafka-consumer-config.concurrency-level=1 -Dspring.sql.init.mode=never
+- payment svc 1: -Dkafka-consumer-config.concurrency-level=1 
+- payment svc 2: -Dkafka-consumer-config.concurrency-level=1 -Dspring.sql.init.mode=never 
+- payment svc 3: -Dkafka-consumer-config.concurrency-level=1 -Dspring.sql.init.mode=never
+- restaurant svc 1: -Dkafka-consumer-config.concurrency-level=1
+- restaurant svc 2: -Dkafka-consumer-config.concurrency-level=1 -Dspring.sql.init.mode=never
+- restaurant svc 3: -Dkafka-consumer-config.concurrency-level=1 -Dspring.sql.init.mode=never
+
+`-Dspring.sql.init.mode=never`: we only want to do the sql initialization in a single instance, otherwise all three instances will
+start creating the schema at the same time and it will create race condition issue as all will be working at the same time to execute
+that sql.
+
+Note: Since we don't have a REST api in payment svc, we don't expose any ports.
+
+The concurrency-level defines the number of threads that will be created in the spring @KafkaListener. Since we have 3 partitions
+on kafka topics, on the consumer side we can create 3 threads to consume each partition in parallel. But since we create 3 instances
+of each svc, instead of having 3 threads in an instance of a svc, we will create one thread per instance so that in total, we will have
+3 consumer threads running in different service instances. Since all instances of a svc share the same consumer group,
+in the end, 3 partitions will be distributed to the instances of the svc so that each instance will 
+consume a single partition of a kafka topic.
+
+Then increase max heap of intellij to be able to run all these services in change memory settings. Use 4096 MiB.
+
+Then run startup shell script.
+
+Make user's credit to 50000 with 70000 credit and 20000 debit and then make a product's price to 1 so that we can send 50,000 order
+for this product using the customer with this credit.
+
+```shell
+brew install jmeter
+
+jmeter
+```
+Then create a test plan with name: `food-ordering-system-load-test`.
+
+Then create a thread group. For now we choose 1 thread which means 1 user.
+
+Ramp-up period: Is the time elapses between the threads to run. So if we set thread count to 10 and ramp-up to 1, each thread will
+start one after another waiting 1 second in between.
+
+Loop count: the number to repeat the same test.
+
+Then for the same thread group:
+- add > config element > http request default.
+- add > config element > http header manager . Set Content-type: application/json.
+- add > sampler > http request and name it: Create Order 1 and set the port to 8181 and left the protocol and server name as empty since
+they will be coming from the http request default. Set path as `orders`.
+
+Under http request, from post processor, create json extractor. Choose main sample and sub-samples. 
+In names of converted variables: `orderTrackingId_1`. In json path expression: `$.orderTrackingId`.
+Then copy the req and name it with 2 and set the port to 8182 and order `orderTrackingId_2` and similarly for third req.
+
+Then create while controller. Uner this, create new http req:
+- name: Get Order Result
+- path: orders/${orderTrackingId_1}
+- then for this req, create json extractor:
+  - names of converted variables: orderStatus_1
+  - json path expressions: $_orderStatus
+
+Then in while controller, check if this extracted orderStatus val is not approved and not cancelled which means the while loop
+will continue until the order svc GET API returns approved or cancelled status which are the final status values for our process(indicate
+that the process is finished).
+Any other values like PENDING, PAID or CANCELLING are intermediate status values.
+`${__javascript("${orderStatus_1}"!="APPROVED" && "${orderStatus_1}"!="CANCELLED")}}`
+
+Copy the while controller for ports 8082 and 8083 and use `orderTrackingId_2<3>` and `orderStatus_2<3>` in json extractor.
+
+To see the results, add: Listener > Graph results and Listener > View results tree
+
+Now run the test. Then run it with 300 threads which means 300 orders approved.
+
+Then write a text file to write the performance test results.
+
+In `300 records(orders) -> 10 seconds`, we got the 10 seconds from top right corner of jmeter which means how much it took 
+the load test to finish.
+
+Now test with 500 threads and we will get 1500 orders.
+
+Then run with 1000 threads. It took 49 seconds.
+
+To show the requirement of locking credit entry, remove pessimistic locking in CreditEntryJpaRepository interface and
+rerun all services again. Now if we send 10 threads(30 in total) and check the orders table, we get 27 CANCELLED because
+credit entry is not consistent with history. This happens because of the concurrent create order reqs coming for the same customer.
+So we need locking there, but we can also use optimistic locking as an alternative to pessimistic locking in that CreditEntryJpaRepository as well. 
 
 ## 125-010 Using Optimistic locking & Comparing Lock strategies with Jmeter load test
 ## 126-011 Comparing Change Data Capture & Pulling the Outbox table using Jmeter load test
